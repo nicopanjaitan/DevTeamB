@@ -10,7 +10,7 @@ import java.util.Date;
 @Document(collection = "request")
 public class FormRequest {
     @Id
-    private String id;
+    private String _id;
 
     private Inventory invId;
 
@@ -23,5 +23,7 @@ public class FormRequest {
     private Date dateRequest;
 
     private Date dateReceived;
+
+    private String status;
 
 }
