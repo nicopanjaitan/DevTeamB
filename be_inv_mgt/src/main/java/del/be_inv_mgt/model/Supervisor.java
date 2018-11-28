@@ -8,5 +8,5 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "supervisor")
 public class Supervisor {
     @Id
-    private String Id;
+    private String _id;
 }
