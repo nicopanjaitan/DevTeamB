@@ -24,10 +24,12 @@
         return JSON.stringify( obj );
       }
 
-      document.addEventListener( "DOMContentLoaded", function() {
+      document.addEventListener("DOMContentLoaded", function() {
         var form = document.getElementById( "test" );
         var output = document.getElementById( "output" );
-        form.addEventListener( "submit", function( e ) {
+        
+        form.addEventListener("submit", 
+          ( e ) {
           e.preventDefault();
           var json = toJSONString( this );
           output.innerHTML = json;
@@ -38,11 +40,41 @@
 
     }
   )();
-</script>
+
+  function test( form ) {
+    var obj = {};
+    var elements = form.querySelectorAll( "input, select, textarea" );
+    for( var i = 0; i < elements.length; ++i ) {
+      var element = elements[i];
+      var name = element.name;
+      var value = element.value;
+
+      if( name ) {
+        obj[name] = value;
+      }
+    }
+
+    return JSON.stringify( obj );
+  }
+
+  function request(){
+
+    var data = {name:"last", detail:"last", price:1200, stock:10, image:"last"};
+    $.ajax({
+        type: "POST",
+        data :JSON.stringify(data),
+        url: "/inv_mgt/inventory/create",
+        contentType: "application/json"
+    });
+ 
+    alert("done");
+  }
+  
+  </script>
 
 <div id="header"></div>
 
-<form id="test" action="#" method="post">
+<form id="test" action="#" method="post" onsubmit="return request();">
     <div class="form-group">
         <label for="name">Item Name</label>
         <input class="form-control" type="text" name="name" id="name" />

@@ -1,0 +1,86 @@
+<script src="../js/jquery3.min.js"></script>
+<script src="../js/bootstrap3.min.js"></script>
+<script src="../js/main.js"></script>
+
+<script type="text/javascript">
+ 
+
+    $(function(){
+      $('form[name=new_post]').submit(function(){
+        $.post($(this).attr('action'), $(this).serialize(), function(json) {
+          alert(json);
+        }, 'json');
+        return false;
+      });
+    });
+
+    
+
+    //code to request an item 
+    function formToJson( form ) {
+        var obj = {};
+        var elements = form.querySelectorAll( "input, select, textarea" );
+        
+        for( var i = 0; i < elements.length; ++i ) {
+            var element = elements[i];
+            var name = element.name;
+            var value = element.value;
+
+            if( name ) {
+                obj[ name ] = value;
+            }
+        }
+
+        return JSON.stringify( obj );
+    }
+
+    function request(jsonData){
+
+        var _data = jsonData;
+
+        $.ajax({
+            type: "POST",
+            url: "/inv_mgt/inventory/create",
+            data :_data,
+            contentType: "application/json"
+        });
+        alert(_data);
+        //alert("done");
+      }
+
+    function request_inventory(){
+        var form = document.getElementById( "req_inv" );
+        var json = formToJson( form );
+        //alert(json);
+        request(json);
+    }
+    
+
+    
+</script>
+
+<form id="req_inv" action="" method="post" onsubmit="request_inventory();">
+    <div class="form-group">
+        <label for="name">Item Name</label>
+        <input class="form-control" type="text" name="name" id="name" />
+    </div>
+    <div class="form-group">
+      <label for="detail">Item Detail</label>
+      <textarea class="form-control" name="detail" rows="5" id="detail"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="name">Item Price</label>
+        <input class="form-control" type="number" name="price" id="price" />
+    </div> 
+    <div class="form-group">
+        <label for="name">Item Stock</label>
+        <input class="form-control" type="number" name="stock" id="stock" />
+    </div> 
+    <div class="form-group">
+        <label for="name">Item Image</label>
+        <input class="form-control" type="name" name="image" id="image" />
+    </div> 
+    <div>
+        <input type="submit" value="Send" class="btn btn-primary btn-block" />
+    </div>
+</form> 

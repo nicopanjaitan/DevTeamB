@@ -1,6 +1,6 @@
 $(function(){
-	$("#header").load("navbar.html"); 
-	$("#sidebar").load("sidebar.html");
-	$("#content").load("content.html");
-	$("#footer").load("footer.html"); 
+	$("#header").load("template/navbar.html"); 
+	$("#sidebar").load("template/sidebar.html");
+	$("#content").load("template/content.html");
+	$("#footer").load("template/footer.html"); 
 });
