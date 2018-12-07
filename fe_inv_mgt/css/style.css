@@ -1,0 +1,26 @@
+/* NAVBAR*/
+#navbar, #body{
+	padding: 0 10em 0 10em;
+}
+.nav li a, .navbar a{
+	color: white;
+}
+/* dropdown color */
+.nav ul li a:hover, ul.nav li:hover{
+	background-color: #4C66A4;
+	color: white;
+}
+.nav ul, .nav ul li{
+ 	background-color: #4a4747;
+}
+
+
+#navbar{
+	position: fixed-top;
+}
+
+/* BODY*/
+/* Sidebar*/
+
+
+/* FOOTER*/

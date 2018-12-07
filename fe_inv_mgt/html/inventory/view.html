@@ -1,0 +1,126 @@
+  <link type="text/css" rel="stylesheet" href="../css/3.3.7/bootstrap.min.css">
+  <link type="text/css" rel="stylesheet" href="../css/style.css">
+
+  <script src="../js/jquery/3.3.1/jquery.min.js"></script>
+  <script src="../js/bootstrap/3.3.7/bootstrap.min.js"></script>
+  <script src="../js/main.js"></script>
+
+<script type="text/javascript">
+	
+	var id = location.href.split("?")[1];
+ 	var inv_detail = "";
+
+ 	var jsonData = (function(){
+ 		$.ajax({
+	 		type:'GET',
+	 		url:'/inv_mgt/inventory/getById/'+id,
+	 		
+		   	success:function(msg){
+		   		inv_detail = msg.name + ' - ' + msg.detail + ' - ' + msg.price + ' - ' +  msg.stock;
+		      	alert(inv_detail);
+		      	$('#viewDetail').append(inv_detail);
+		   	}
+		}); 
+
+ 	})();
+ 	var x = "";
+ 	function loadForm(){
+    	//$("#form_upd").load("form.html"); 
+
+    	var data = $.parseJSON(
+    		$.ajax({
+        		url:  '/inv_mgt/inventory/getById/'+id,
+        		dataType: "json", 
+        		async: false
+	    	}).responseText); // This will wait until you get a response from the ajax request.
+
+	    // Now you can use data.posX, data.posY later in your code and it will work.
+	    x = JSON.stringify(data);
+	    alert(x);
+	    document.getElementById("url").innerHTML = x; 
+	    //$('[name=name]', '#req_inv').val(data.name);
+	    populate('#req_inv', JSON.stringify(data));
+	    alert('success');
+  	}
+
+  	function populate(form, data) {  
+  		var dataJson = JSON.parse(data, function (key, value) {
+	     	var formInput = $('[name='+ key +']', form);  
+	        switch(formInput.prop("type")) { 
+	            case "radio": case "checkbox":   
+	                formInput.each(function() {
+	                    if($(this).attr('value') == value) $(this).attr("checked",value);
+	                });   
+	                break;  
+	            default:
+	                formInput.val(value); 
+	        }  
+	    }); 
+	}
+
+	function try_req(){
+      // $.ajax({
+      //       type: "POST",
+      //       url: "/inv_mgt/inventory/updateById/"+id,
+      //       data: $("#req_inv").serialize(),
+      //       contentType: "application/json",
+      //       success: function(msg){
+      //         console.log($(msg));   //return as an array
+      //         alert('success');
+      //       }
+      //   });
+      //   alert(msg);
+      alert('enter');
+      $.ajax({
+    type: 'PUT',
+    url: "/inv_mgt/inventory/updateById/"+id,
+    contentType: 'application/json',
+    data: $("#req_inv").serialize(), // access in body
+}).done(function () {
+    console.log('SUCCESS');
+}).fail(function (msg) {
+    console.log('FAIL');
+}).always(function (msg) {
+    console.log('ALWAYS');
+});
+    }
+
+</script>
+View
+<button type="button" class="btn btn-primary" onclick="loadForm();">Edit</button>
+
+
+<div id="url"></div>
+
+<div id="viewDetail"></div>
+<div id="form_upd"></div>
+<form id="req_inv" action="" method="post" onsubmit="try_req();">
+    <div class="form-group">
+        <label for="name">Item Name</label>
+        <input class="form-control" type="text" name="name" id="name" />
+    </div>
+    <div class="form-group">
+      <label for="detail">Item Detail</label>
+      <textarea class="form-control" name="detail" rows="5" id="detail"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="name">Item Price</label>
+        <input class="form-control" type="number" name="price" id="price" />
+    </div> 
+    <div class="form-group">
+        <label for="name">Item Stock</label>
+        <input class="form-control" type="number" name="stock" id="stock" />
+    </div> 
+    <div class="form-group">
+        <label for="name">Item Image</label>
+        <input class="form-control" type="name" name="image" id="image" />
+    </div> 
+    <div>
+        <input type="submit" value="Send" class="btn btn-primary btn-block" />
+    </div>
+</form> 
+
+
+<script type="text/javascript">
+	
+</script>

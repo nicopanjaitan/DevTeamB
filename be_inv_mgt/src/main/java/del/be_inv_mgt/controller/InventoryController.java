@@ -14,16 +14,6 @@ public class InventoryController {
     @Autowired
     private InventoryService inventoryService;
 
-    @GetMapping("/showAllInv")
-    public String showAllInv(){
-        return "inventory";
-    }
-
-    @GetMapping("/test")
-    public String testView(){
-        return "index";
-    }
-
     @GetMapping("/getAll")
     public List<Inventory> getAllInventory(){
         return inventoryService.getAllInventory();
