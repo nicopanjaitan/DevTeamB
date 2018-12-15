@@ -1,61 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link type="text/css" rel="stylesheet" href="../css/3.3.7/bootstrap.min.css">
-  <link type="text/css" rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-  <script src="../js/jquery/3.3.1/jquery.min.js"></script>
-  <script src="../js/jquery/3.3.7/bootstrap.min.js"></script>
-  <script src="../js/main.js"></script>
-  <script>
+  <script src="/js/index.js"></script>
+ 
 
-      $.ajax({
-        url: '/inv_mgt/inventory/getAll',
-        success: function(response) {
-            var inv_data = '';
-            $.each(response, function (i, data) {
-                inv_data += 
-                  '<tr><td>' + (i+1)
-                  + '</td><td><a href="/inventory/view.html?'+ (data._id)+'"">' + data.name 
-                  + '</a></td><td>' + data.detail 
-                  + '</td><td>' + data.price 
-                  + '</td><td>' + data.stock 
-                  + '</td><td>' + data.image 
-                  + '</td><td>a' 
-                  + '</td></tr>';
-            });
-            $('#inv_table').append(inv_data);
-            alert('Done.');
-         }
-      });
-
-      
-  </script>
 </head>
 <body>
-
-<div class="container">
+ 
   <h2>Inventory</h2>
    
-  <button onclick="">Edit</button>                                                                                 
-  
+  <button onclick="viewAll_inventory('/inv_mgt/inventory/getAll');">View All</button> 
+  <a href="/inventory/form.html"><button >Create</button></a>
+
   <div class="table-responsive" >          
-  <table class="table table-striped table-hover" id="inv_table" border="1">
-  
-    <tr>
-      <th>#</th>
-      <th>Name</th>
-      <th>Detail</th>
-      <th>Price</th>
-      <th>Stock</th>
-      <th>Image</th>
-      <th>Action</th>
-    </tr>
+    <table class="table table-striped table-hover" id="inv_table" border="1">
     
-  </table>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Detail</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Image</th> 
+      </tr>
+      
+    </table>
   </div>
-</div>
+ 
+     
+</body>
+ 
 
 </body>
 </html>

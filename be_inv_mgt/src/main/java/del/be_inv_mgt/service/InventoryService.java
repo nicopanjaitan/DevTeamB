@@ -8,11 +8,15 @@ import java.util.List;
 public interface InventoryService {
     List<Inventory> getAllInventory();
 
-    Inventory getInventoryById(String invId);
+    Inventory getInventoryByCode(String code);
+
+    Inventory getInventoryByName(String name);
 
     Inventory createInventory(Inventory inventory);
 
-    Inventory updateInventoryById(String invId, Inventory inventory);
+    Inventory updateInventoryByCode(String code, Inventory inventory);
 
-    int deleteInventoryById(String _invId);
+    Inventory updateInventoryStockByCode(String code, int newStock);
+
+    boolean deleteInventoryByCode(String code);
 }

@@ -1,6 +1,8 @@
 package del.be_inv_mgt.controller;
 
+import del.be_inv_mgt.controller.addition.GlobalController;
 import del.be_inv_mgt.model.Supervisor;
+import del.be_inv_mgt.model.respon.Response;
 import del.be_inv_mgt.service.SupervisorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,35 +12,37 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/inv_mgt/supervisor")
-public class SupervisorController {
+public class SupervisorController extends GlobalController {
     @Autowired
     private SupervisorService supervisorService;
 
     @GetMapping("/getAll")
-    public List<Supervisor> getAllSupervisor(){
-        return supervisorService.getAllSupervisor();
+    public Response<List<Supervisor>> getAll(){
+        return toResponse(supervisorService.getAllSupervisor());
     }
 
-    @GetMapping("/getById/{id}")
-    public Supervisor getById(@PathVariable("id") String supervId){
-        return supervisorService.getSupervisorById(supervId);
+    @GetMapping("/getById/{employeeID}")
+    public Response<Supervisor> getById(@PathVariable String supervisorID){
+        return toResponse(supervisorService.getSupervisorById(supervisorID));
+    }
+
+    @GetMapping("/getByName/{name}")
+    public Response<Supervisor> getByName(@PathVariable String name){
+        return toResponse(supervisorService.getSupervisorByName(name));
     }
 
     @PostMapping("/create")
-    public Supervisor create(@Valid @RequestBody Supervisor supervisor){
-        return supervisorService.createSupervisor(supervisor);
+    public Response<Supervisor> create(@Valid @RequestBody Supervisor supervisor){
+        return toResponse(supervisorService.createSupervisor(supervisor));
     }
 
-    @PutMapping(value = "/updateById/{id}")
-    public Supervisor updateById(@PathVariable("id") String supervisorId, @Valid @RequestBody Supervisor supervisor) {
-        supervisor.set_id(supervisorId);
-        supervisorService.updateSupervisorById(supervisorId, supervisor);
-        return supervisor;
+    @PutMapping(value = "/updateById/{supervisorID}")
+    public Response<Supervisor> updateById(@PathVariable String supervisorID, @Valid @RequestBody Supervisor supervisor) {
+        return toResponse(supervisorService.updateSupervisorById(supervisorID, supervisor));
     }
 
-    @DeleteMapping("/deleteById/{id}")
-    public int deleteById(@PathVariable("id") String supervisorId) {
-        supervisorService.deleteSupervisorById(supervisorId);
-        return 1;
+    @DeleteMapping("/deleteById/{supervisorID}")
+    public Response<Boolean> deleteById(@PathVariable String supervisorID) {
+        return toResponse(supervisorService.deleteSupervisorById(supervisorID));
     }
 }
