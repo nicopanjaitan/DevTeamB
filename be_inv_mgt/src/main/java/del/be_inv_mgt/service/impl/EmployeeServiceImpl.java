@@ -26,7 +26,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     public List<Employee> getAllEmployeeBySupervisorId(String supervisorID){
-        List<Employee> employees = employeeRepository.findEmployeeBySupervisorId(supervisorID);
+        List<Employee> employees = employeeRepository.findEmployeeBySupervisorID(supervisorID);
 
         if(employees.isEmpty()){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
@@ -71,12 +71,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(employee == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }else{
-            employee.setUserID(employeeID);
+            employee.setEmployeeID(employeeID);
             employee.setPassword(employee.getPassword());
 
             employee.setName(employeeUpd.getName());
             employee.setEmail(employeeUpd.getEmail());
-            employee.setGender(employeeUpd.getGender());
             employee.setAddress(employeeUpd.getAddress());
             employee.setSupervisorID(employeeUpd.getSupervisorID());
 
@@ -92,10 +91,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(employee == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }else{
-            employee.setUserID(employeeID);
+            employee.setEmployeeID(employeeID);
             employee.setName(employee.getName());
             employee.setEmail(employee.getEmail());
-            employee.setGender(employee.getGender());
             employee.setAddress(employee.getAddress());
             employee.setSupervisorID(employee.getSupervisorID());
 

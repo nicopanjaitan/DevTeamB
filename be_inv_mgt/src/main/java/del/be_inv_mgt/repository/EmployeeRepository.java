@@ -12,5 +12,5 @@ public interface EmployeeRepository extends MongoRepository<Employee, String> {
 
     Employee findByEmail(String email);
 
-    List<Employee> findEmployeeBySupervisorId(String supervisorID);
+    List<Employee> findEmployeeBySupervisorID(String supervisorID);
 }

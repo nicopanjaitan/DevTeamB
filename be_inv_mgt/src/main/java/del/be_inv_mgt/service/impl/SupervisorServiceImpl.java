@@ -61,13 +61,12 @@ public class SupervisorServiceImpl implements SupervisorService {
         if(supervisor == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }else{
-            supervisor.setUserID(supervisorID);
-            supervisor.setPassword(supervisor.getPassword());
+            supervisor.setSupervisorID(supervisorID);
+
 
             supervisor.setName(supervisorUpd.getName());
             supervisor.setEmail(supervisorUpd.getEmail());
-            supervisor.setGender(supervisorUpd.getGender());
-            supervisor.setAddress(supervisorUpd.getAddress());
+            supervisor.setPassword(supervisorUpd.getPassword());
 
             supervisorRepository.save(supervisor);
         }

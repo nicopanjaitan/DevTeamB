@@ -11,10 +11,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "employee")
-public class Employee extends User{
+public class Employee {
+    private String employeeID;
+
+    private String name;
+
+    @Indexed(unique = true)
+    private String email;
+
+    private String password;
+
+    private String address;
 
     private String supervisorID;
-
-    public Employee(String userID, String name, )
-
 }

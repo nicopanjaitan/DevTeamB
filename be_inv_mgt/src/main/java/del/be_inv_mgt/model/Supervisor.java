@@ -11,6 +11,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "supervisor")
-public class Supervisor extends User{
+public class Supervisor{
+    private String supervisorID;
 
+    private String name;
+
+    @Indexed(unique = true)
+    private String email;
+
+    private String password;
 }
