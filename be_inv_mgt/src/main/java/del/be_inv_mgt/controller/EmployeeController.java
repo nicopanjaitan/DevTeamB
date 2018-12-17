@@ -1,6 +1,8 @@
 package del.be_inv_mgt.controller;
 
+import del.be_inv_mgt.controller.addition.GlobalController;
 import del.be_inv_mgt.model.Employee;
+import del.be_inv_mgt.model.respon.Response;
 import del.be_inv_mgt.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,35 +12,49 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/inv_mgt/employee")
-public class EmployeeController {
+public class EmployeeController extends GlobalController {
     @Autowired
     private EmployeeService employeeService;
 
     @GetMapping("/getAll")
-    public List<Employee> getAllSupervisor(){
-        return employeeService.getAllEmployee();
+    public Response<List<Employee>> getAll(){
+        return toResponse(employeeService.getAllEmployee());
     }
 
-    @GetMapping("/getById/{id}")
-    public Employee getById(@PathVariable("id") String empId){
-        return employeeService.getEmployeeById(empId);
+    @GetMapping("/getBySupervisorId/{supervisorID}")
+    public Response<List<Employee>> getBySupervisorId(@PathVariable String supervisorID){
+        return toResponse(employeeService.getAllEmployeeBySupervisorId(supervisorID));
+    }
+
+    @GetMapping("/getById/{employeeID}")
+    public Response<Employee> getById(@PathVariable String employeeID){
+        return toResponse(employeeService.getEmployeeById(employeeID));
+    }
+
+    @GetMapping("/getByName/{name}")
+    public Response<Employee> getByName(@PathVariable String name){
+        return toResponse(employeeService.getEmployeeByName(name));
     }
 
     @PostMapping("/create")
-    public Employee create(@Valid @RequestBody Employee employee){
-        return employeeService.createEmployee(employee);
+    public Response<Employee> create(@Valid @RequestBody Employee employee){
+        return toResponse(employeeService.createEmployee(employee));
     }
 
-    @PutMapping(value = "/updateById/{id}")
-    public Employee updateById(@PathVariable("id") String empId, @Valid @RequestBody Employee employee) {
-        employee.set_id(empId);
-        employeeService.updateEmployeeById(empId, employee);
-        return employee;
+    @PutMapping(value = "/updateById/{employeeID}")
+    public Response<Employee> updateById(@PathVariable String employeeID, @Valid @RequestBody Employee employee) {
+        return toResponse(employeeService.updateEmployeeById(employeeID, employee));
     }
 
-    @DeleteMapping("/deleteById/{id}")
-    public int deleteById(@PathVariable("id") String empId) {
-        employeeService.deleteEmployeeById(empId);
-        return 1;
+    @PutMapping(value = "/updatePasswordById/{employeeID}")
+    public Response<Employee> updatePasswordById(@PathVariable String employeeID, @Valid @RequestBody Employee employee) {
+        return toResponse(employeeService.updatePasswordById(employeeID, employee.getPassword()));
     }
+
+    @DeleteMapping("/deleteById/{employeeID}")
+    public Response<Boolean> deleteById(@PathVariable String employeeID) {
+        return toResponse(employeeService.deleteEmployeeById(employeeID));
+    }
+
+
 }

@@ -1,28 +1,39 @@
 package del.be_inv_mgt.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
 @Data
-@Document(collection = "request")
+@AllArgsConstructor
+@NoArgsConstructor
+@Document(collection = "form_request")
 public class FormRequest {
     @Id
-    private String _id;
+    private String id;
 
-    private Inventory invId;
+    //untuk id transaksi yg dpt di publikasi
+    @Indexed(unique = true)
+    private String requestID;
 
-    private Employee empId;
+    private String inventoryID;
+
+    private String employeeID;
+
+    private String supervisorID;
 
     private int qtyRequest;
 
     private String destination;
 
-    private Date dateRequest;
+    private String dateRequest;
 
-    private Date dateReceived;
+    private String dateReceived;
 
     private String status;
 

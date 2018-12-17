@@ -9,11 +9,13 @@ import java.util.List;
 public interface SupervisorService {
     List<Supervisor> getAllSupervisor();
 
-    Supervisor getSupervisorById(String supervId);
+    Supervisor getSupervisorById(String supervisorID);
 
-    Supervisor createSupervisor(Supervisor supervisor);
+    Supervisor getSupervisorByName(String supervisorID);
 
-    Supervisor updateSupervisorById(String supervId, Supervisor supervisor);
+    Supervisor createSupervisor(Supervisor supervisorID);
 
-    int deleteSupervisorById(String supervId);
+    Supervisor updateSupervisorById(String supervisorID, Supervisor supervisor);
+
+    boolean deleteSupervisorById(String supervId);
 }
