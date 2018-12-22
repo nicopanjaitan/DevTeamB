@@ -1,26 +1,54 @@
 /* NAVBAR*/
-#navbar, #body{
-	padding: 0 10em 0 10em;
+nav.navbar{
+	margin: 0; 
+	border-radius: 0; 
 }
+nav.navbar, .nav li a:focus{
+	background-color: rgb(60, 141, 188); /* blue as website navbar*/
+}
+nav .navbar-header{
+	background-color: rgb(54, 127, 169); /* dark blue for website title*/
+	/*position: fixed;*/
+}
+nav .navbar-header q{
+	padding: 0;
+}
+ 
 .nav li a, .navbar a{
 	color: white;
 }
-/* dropdown color */
-.nav ul li a:hover, ul.nav li:hover{
-	background-color: #4C66A4;
+.nav li a:hover, .nav li.open a:focus{
+	background-color: rgb(54, 127, 169);
 	color: white;
 }
-.nav ul, .nav ul li{
- 	background-color: #4a4747;
+ul.dropdown-menu{
+	background-color: rgb(60, 141, 188);
+	width: 100%;
+	padding: 0;
 }
 
-
-#navbar{
-	position: fixed-top;
+ul#dropdown_navbar{
+	padding: 0.5em;
+	background-color: rgb(60, 141, 188);
+	width: 250px;
+	color: white;
 }
 
-/* BODY*/
-/* Sidebar*/
+/* ASIDE */
+#aside{  
+	background-color: rgb(51, 51, 51); /* black as website aside*/
+}
 
+/* CONTENT */
+div.content{
+	padding: 1em;  
+}
 
-/* FOOTER*/
+#inv_table thead{
+	background-color:  rgb(54, 127, 169); /* blue as website navbar*/
+	color: white;
+}
+
+#viewButton, #updateButton, #deleteButton{
+	margin-right: 0.5em;
+}

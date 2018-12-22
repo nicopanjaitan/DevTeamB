@@ -1,38 +1,415 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Inventory Management System</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inventory Management System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 <link type="text/css" rel="stylesheet" href="../css/3.3.7/bootstrap.min.css"/>
 <link type="text/css" rel="stylesheet" href="../css/style.css"/>
 
-<script src="../js/jquery/3.3.1/jquery.min.js"></script>
-<script src="../js/bootstrap/3.3.7/bootstrap.min.js"></script>
-<script src="../js/main.js"></script>
-  	
-  	
+<script src="/js/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/bootstrap/3.3.7/bootstrap.min.js"></script>
+
+  <script type="text/javascript">
+
+     $(document).ready(function(){
+      var inv_data = '';
+
+      $.ajax({
+          type: "GET",
+          url: "/inv_mgt/inventory/getAll",
+          dataType: "json",
+          ContentType: "application/json",
+          success: function(response){
+
+            $.each(response.data, function (i, inventory) {   
+              $("#inv_table").append(
+                '<tr>'
+                  +'<td>' + (i+1) + '</td>'
+                  +'<td>' + inventory.name + '</td>'
+                  +'<td>' + inventory.price + '</td>'
+                  +'<td>' + inventory.stock + '</td>'
+                  +'<td>' + inventory.image + '</td>'
+                  +'<td class="col-md-3">' +  
+                    '<button id="viewButton" class="btn btn-info" value="' + inventory.code + '" data-toggle="modal" data-target="#viewModal" >View</button>' +
+                    '<button id="updateStockButton" class="btn btn-primary" value="' + inventory.code + '" data-toggle="modal" data-target="#updateModal" >Update Stock</button>' +
+                    '<button id="deleteButton" class="btn btn-danger" value="' + inventory.code + '" >Delete</button>' 
+                  +'</td>' +
+                '</tr>'
+                ); 
+          	});
+ 
+          },
+          error: function(){
+              alert("Error");
+          }
+      });
+
+      $(document).on("click", "#viewButton", function(){
+          var id = $(this).val();
+      
+          $.ajax({
+              type: "GET",
+              contentType: "application/json",
+              url: "/inv_mgt/inventory/getById/" + id,
+              success: function(response){
+ 				   
+                  $("#inventoryName").append(response.data.name);
+                  $("#inventoryDetail").append(response.data.detail);
+                  $("#inventoryPrice").append(response.data.price);
+                  $("#inventoryStock").append(response.data.stock);
+                   
+              },
+              error: function(url){
+                  alert("Error");
+              }
+          });
+      });
+
+      $(document).on("click", "#addButtonForm", function(){
+      
+  //     	alert("1");
+  //     	var target_dir = "/picture/inventory/";
+  //     	alert("2");
+  //     	var imge="$_FILES['image'][0];"
+  //     	alert("2.5");
+		// var target_file = target_dir.imge;
+		// alert("3");
+		// $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
+		// alert("4");
+
+		// if (!move_uploaded_file($imge['tmp_name'], $target_file)) {
+		// 	alert("gagal");
+		// }else{
+		// 	alert("success");
+		// }
+
+		var file    = document.querySelector('input[type=file]').files[0];
+  		var reader  = new FileReader();
+  		
+      	  
+         //  var formData = { 
+         //  	name: $("#name").val(),
+         //  	detail: $("#detail").val(),
+         //  	price: $("#price").val(),
+         //  	stock: $("#stock").val(),
+         //    image: $("#image").val()
+         //  };
+
+         // alert(formData);
+
+         //  $.ajax({
+         //      type 			: "POST",
+         //      data 			: JSON.stringify(formData),
+         //      ContentType 	: "application/json",
+         //      url			: "/inv_mgt/inventory/Create",
+         //      success: function(response){
+         //  		  alert("success");
+         //          //location.reload();
+         //      },
+         //      error: function(url){
+         //      	alert(JSON.stringify(formData));
+         //          alert("Error");
+         //      }
+         //  });
+ 
+      });
+
+      $(document).on("click", "#updateStockButton", function(){
+          var id = $(this).val();
+          var form = document.getElementById('updateStockForm');
+          var inputStock = $('[name=stock]', form); 
+      
+          $.ajax({
+              type: "GET",
+              contentType: "application/json",
+              url: "/inv_mgt/inventory/getById/" + id,
+              success: function(response){
+          		inputStock.val(response.data.stock); 
+                $("#updateStockButtonForm").val(id);
+              },
+              error: function(url){
+                  alert("Error");
+              }
+          });
+      });
+//masih perlu dicariiiiiiiiiiiiiiiiiiiiii
+      $(document).on("click", "#updateStockButtonForm", function(){
+      	  var id = $(this).val();
+          var formData = {
+            stock: $("#stock").val()
+          };
+
+          $.ajax({
+              type 			: "PUT",
+              data 			: JSON.stringify(formData),
+              ContentType 	: "application/json",
+              url			: "/inv_mgt/inventory/updateStockById/" + id,
+              success: function(response){
+          		  alert("success");
+                  //location.reload();
+              },
+              error: function(url){
+              	alert(JSON.stringify(formData));
+                  alert("Error");
+              }
+          });
+ 
+      });
+
+      $(document).on("click", "#deleteButton", function(){
+          var id = $(this).val();
+      
+          $.ajax({
+              type: "DELETE",
+              contentType: "application/json",
+              url: "/inv_mgt/inventory/deleteById/" + id,
+              success: function(){
+                  alert("Product deleted");
+                  location.reload();
+              },
+              error: function(url){
+                  alert("Error");
+              }
+          });
+      });
+ 
+
+  });
+</script>
+
+
 </head>
 <body>
-	<!-- This is the header of system-->
-	<div id="header"></div>
+	<header>
+	    <nav class="navbar" id="navbar" >
+	        <div class="navbar-header col-md-2">
+	          <a class="navbar-brand" href="#">NN - Inventory M S</a>
+	        </div> 
+	        <div class="col-md-10" >
+	          <ul class="nav navbar-nav navbar-right" style="padding-right: 2em">
+	            <li class="navbar_menu"><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+	            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+	            <li class="dropdown">
+	                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+	                  <img src="" class="user-image" alt="user_img">
+	                  <span class="hidden-xs">Username</span>
+	                </a>
+	                <ul class="dropdown-menu" id="dropdown_navbar">
+	                  <!-- Image -->
+	                  <li class="user-header">
+	                    <img src="" class="img-circle" alt="user_img">
+	                    <p>
+	                      Nani Renova Hutagaol - Web Developer
+	                    </p>
+	                  </li>  
+	                  <!-- Footer-->
+	                  <li class="user-footer">
+	                    <div class="pull-left">
+	                      <a href="#" class="btn btn-default">Profile</a>
+	                    </div>
+	                    <div class="pull-right">
+	                      <a href="#" class="btn btn-default">Sign out</a>
+	                    </div>
+	                  </li>
+	                </ul>
+	              </li>
+	          </ul>
+	        </div>
+	    </nav>
+	</header>
 
-	<!-- This is the body of system-->
-	<div id="body">
-		<!-- This is the sidebar of system-->
-		<div id="sidebar" class="col-md-2" style="background-color: #282828; padding: 0">
-		</div>
 
-		<!-- This is the content of system-->
-		<div id="content" class="col-md-10" style="background-color: whitesmoke; padding: 0 1em 0 1em">
-			<h2>Welcome to...<br>
-				Inventory Management System...
-			</h2>
+	<aside class="col-md-2" style="padding: 0; height: 600px; ">
+		<ul class="nav" id="aside">
+			<li class="active" id="dashboard_menu"><a href="#">Dashboard</a></li>
+			<li class="dropdown" id="inventory_menu">
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#">Inventory<span class="caret"></span></a>
+				<ul class="dropdown-menu">
+				  <li><a href="/inventory">View</a></li>
+				  <li><a href="#">Create</a></li>
+				</ul>
+			</li>
+			<li><a href="#">Request</a></li>
+			<li><a href="#">Employee</a></li>
+			<li><a href="#">Supervisor</a></li>
+			<li><a href="#">User</a></li>
+		</ul>
+ 
+	</aside>
+	
+	<!-- ================================== CONTENT ===================================== -->
+	<div class="content col-md-10" >
+		<div class="col-md-12" style="padding: 0">
+			<div class="col-md-12"style="padding: 0" >
+				<h2  >Inventory</h2>
+			</div>
+			<div class="col-md-10 coloumn" style="margin-bottom: 1em; padding: 0"> 
+				<div class="col-md-11" style="padding: 0;">
+					<form>
+					  <div class="input-group">
+					    <input type="text" class="form-control" placeholder="Search">
+					    <div class="input-group-btn">
+					      <button class="btn btn-default" type="submit">
+					        <i class="glyphicon glyphicon-search"></i>
+					      </button>
+					    </div>
+					  </div>
+					</form> 
+				</div>
+				<div class="col-md-1" style="float: right; padding: 0; ">
+					<button class="btn btn-primary" data-toggle="modal" data-target="#addModal">Add New Inventory</button>
+				</div>
+			</div>
 		</div>
+		<table class="table table-striped table-bordered table-hover" id="inv_table"  >
+	      <thead class="thead-dark">
+	           <tr>
+	            <th>#</th>
+	            <th>Name</th> 
+	            <th>Price</th>
+	            <th>Stock</th>
+	            <th>Image</th> 
+	            <th>Action</th>
+	          </tr>
+	      </thead>
+	     
+	      <tbody id="table-content">
+	      </tbody>
+	    </table>
+
+	     <!-- ===================================    Modal to Form     ============================================== -->
+		  <div class="modal fade" id="addModal" role="dialog">
+		    <div class="modal-dialog">
+		   
+		      <!-- Modal content-->
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        <h4 class="modal-title" style="text-align: center; color: green">Add New Inventory</h4>
+			      </div>
+			      <div class="modal-body">
+			         <form action="" method="POST">
+			          <div class="form-group">
+					    <label for="name">Inventory Name</label>
+					    <input type="text" class="form-control" id="name" required="" readonly="">
+					  </div>
+					  <div class="form-group">
+					    <label for="detail">Detail</label>
+					    <textarea class="form-control" rows="5" id="detail" required="" readonly=""></textarea>
+					  </div>
+					  <div class="form-group">
+					    <label for="price">Price</label>
+					    <input type="number" class="form-control" id="price" required="" min="1" readonly="">
+					  </div>
+					  <div class="form-group">
+					    <label for="stock">Stock</label>
+					    <input type="number" class="form-control" id="stock" required="" min="1" readonly="">
+					  </div>
+					  <div class="form-group">
+					    <label for="image">Image</label>
+					    <input type="file"  id="image" name="image" required="">
+					  </div>
+					  <button type="submit" class="btn btn-success" id="addButtonForm" style="width: 100%">Add New</button>
+					</form> 
+			      </div> 
+			    </div>
+		      
+		    </div>
+		  </div>
+
+	   
+		<!-- ===================================    Modal to View     ============================================== -->
+		  <div class="modal fade" id="viewModal" role="dialog">
+		    <div class="modal-dialog">
+		    
+		      <!-- Modal content-->
+		      <div class="modal-content"> 
+		        <div class="modal-body Coloumn">
+		          <div class="col-md-12" style="float: right;">
+		        	<button type="button" class="close" data-dismiss="modal">&times;</button>
+		          </div>
+		          <div class="col-md-4">
+		          	<img src="/picture/user.png" style="width: 100%">  
+		          </div>
+		          <div class="col-md-8" >
+		          	<table class="table table-condensed" id="viewInventory_table">
+				      <tr>
+				        <td>Name</td>
+				        <td id="inventoryName"></td>
+				      </tr>
+				      <tr>
+				        <td>Detail</td>
+				        <td id="inventoryDetail"></td> 
+				      </tr>
+				      <tr>
+				        <td>Price</td>
+				        <td id="inventoryPrice">Rp </td>
+				      </tr>
+				      <tr>
+				        <td>Stock</td>
+				        <td id="inventoryStock"></td>
+				      </tr>
+					</table>
+
+		          </div>
+		          <button id="delete" class="btn btn-danger" style="margin-left: 1em;">Delete</button>
+		          
+		        </div>
+		      </div>
+		      
+		    </div>
+		  </div>
+
+		  <!-- ===================================    Modal to Update     ============================================== -->
+		  <div class="modal fade" id="updateModal" role="dialog">
+		    <div class="modal-dialog">
+		   
+		      <!-- Modal content-->
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal">&times;</button>
+			        <h4 class="modal-title" style="text-align: center;">Update Stock Inventory</h4>
+			      </div>
+			      <div class="modal-body">
+			        <form action="" method="POST">
+					  <div class="form-group" id="updateStockForm">
+					    <label for="stock">Stock:</label>
+					    <input type="number" class="form-control" id="stock" name="stock">
+					  </div>  
+					  <button type="submit" class="btn btn-success" id="updateStockButtonForm">Update</button>
+					</form> 
+			      </div> 
+			    </div>
+		      
+		    </div>
+		  </div>
+
+
+
+
+
+  <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
+  <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
+  <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
+  <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>  <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
+  <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
+  <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
+  <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>  <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
+  <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
+  <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>
+  <p>Some text to enable scrolling.. Lorem ipsum dolor sit amet, illum definitiones no quo, maluisset concludaturque et eum, altera fabulas ut quo. Atqui causae gloriatur ius te, id agam omnis evertitur eum. Affert laboramus repudiandae nec et. Inciderint efficiantur his ad. Eum no molestiae voluptatibus.</p>    
+
 	</div>
+	
 
-	<!-- This is the footer of system-->
-	<div id="footer"></div>
+	<footer>
+		
+	</footer>
+
+
+
+	
 
 </body>
 </html>
