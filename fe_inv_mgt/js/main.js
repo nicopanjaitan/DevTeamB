@@ -1,9 +1,4 @@
-$(function(){
-  $("#header").load("template/navbar.html"); 
-  $("#sidebar").load("template/sidebar.html");
-  $("#footer").load("template/footer.html"); 
 
-});
 
 
 var id = location.href.split("?")[1];

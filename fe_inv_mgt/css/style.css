@@ -8,7 +8,7 @@ nav.navbar, .nav li a:focus{
 }
 nav .navbar-header{
 	background-color: rgb(54, 127, 169); /* dark blue for website title*/
-	/*position: fixed;*/
+	position: fixed;
 }
 nav .navbar-header q{
 	padding: 0;
@@ -21,12 +21,19 @@ nav .navbar-header q{
 	background-color: rgb(54, 127, 169);
 	color: white;
 }
+
 ul.dropdown-menu{
 	background-color: rgb(60, 141, 188);
-	width: 100%;
+	width: 75%;
 	padding: 0;
 }
 
+ul#dropdownTools{
+	background-color: #ddd;
+	width: 100%;
+	padding: 0;
+}
+ 
 ul#dropdown_navbar{
 	padding: 0.5em;
 	background-color: rgb(60, 141, 188);
@@ -37,11 +44,21 @@ ul#dropdown_navbar{
 /* ASIDE */
 #aside{  
 	background-color: rgb(51, 51, 51); /* black as website aside*/
+	position: fixed;
+	width: 100%;
+	height: 100%;
 }
 
 /* CONTENT */
 div.content{
 	padding: 1em;  
+}
+
+.content{
+	background-color: rgb(236, 240, 245);
+}
+table{
+	background-color: white;
 }
 
 #inv_table thead{
@@ -50,5 +67,55 @@ div.content{
 }
 
 #viewButton, #updateButton, #deleteButton{
-	margin-right: 0.5em;
+	width: 100%;
+	text-align: left;
+	background-color: white;
+	border-bottom-color: #ddd;
+}
+
+#viewButton:hover, #updateButton:hover, #deleteButton:hover{
+	background-color: #f9f9f9;
+}
+
+#viewButton{
+	color: rgb(60, 141, 188);
+}
+
+#updateButton{
+	color: rgb(0, 166, 90);
+}
+
+#deleteButton{
+	color: rgb(221, 75, 57);
+}
+
+
+
+/* INFO */
+.alert-success{
+	background-color: rgb(0, 166, 90);
+	border-color: rgb(0, 115, 62);
+	color: white;
+	border-left-width: 0.5em;
+}
+
+.alert-info{
+	background-color: rgb(0, 192, 239);
+	border-color: rgb(0, 151, 188);
+	color: white;
+	border-left-width: 0.5em;
+}
+
+.alert-warning{
+	background-color: rgb(243, 156, 18);
+	border-color: rgb(200, 127, 10);;
+	color: white;
+	border-left-width: 0.5em;
+}
+
+.alert-danger{
+	background-color: rgb(221, 75, 57);
+	border-color: rgb(215, 57, 37);
+	color: white;
+	border-left-width: 0.5em;
 }

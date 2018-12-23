@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 	
 <link type="text/css" rel="stylesheet" href="../css/3.3.7/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
 <link type="text/css" rel="stylesheet" href="../css/style.css"/>
 
 <script src="/js/jquery/3.3.1/jquery.min.js"></script>
@@ -37,6 +38,7 @@
                   +'</td>' +
                 '</tr>'
                 ); 
+
           	});
  
           },
@@ -66,54 +68,85 @@
           });
       });
 
+      function getTime(){
+      	var timeNow = new Date();
+      	var date = timeNow.getDate();
+      	var month = timeNow.getMonth();
+      	var year = timeNow.getFullYear();
+      	var hours   = timeNow.getHours();
+		var minutes = timeNow.getMinutes();
+		var seconds = timeNow.getSeconds();
+
+		var hourss = hours;
+		if(hours < 10){
+      		hourss = '0'+ hours;
+      	}
+
+		var dateTime = date + '' + month + '' + year + '' + hourss + '' + minutes + '' + seconds;
+
+		return dateTime;
+      } 
+
+      $(document).on("click", "#search", function(){
+ 		alert(getTime());
+      });
+
       $(document).on("click", "#addButtonForm", function(){
-      
-  //     	alert("1");
-  //     	var target_dir = "/picture/inventory/";
-  //     	alert("2");
-  //     	var imge="$_FILES['image'][0];"
-  //     	alert("2.5");
-		// var target_file = target_dir.imge;
-		// alert("3");
-		// $file_type = pathinfo($target_file, PATHINFO_EXTENSION);
-		// alert("4");
+          var formData = { 
+          	code: 'inv_' + getTime(),
+          	name: $("#name").val(),
+          	detail: $("#detail").val(),
+          	price: $("#price").val(),
+          	stock: $("#stock").val(),
+            image: $("#images").val()
+          };
 
-		// if (!move_uploaded_file($imge['tmp_name'], $target_file)) {
-		// 	alert("gagal");
-		// }else{
-		// 	alert("success");
-		// }
+          var check = JSON.parse(data, function (key, value){
+          	if (value ==  null) {
+          		return;
+          	}
+          	
+          	$.ajax({
+              type 			: "POST",
+              data 			: JSON.stringify(formData),
+              contentType 	: "application/json",
+              url			: "/inv_mgt/inventory/create",
+              success: function(response){
+              	alert(response.data);  
+                showAlert('success');
+              },
+              error: function(response){
+              	showAlert('failed');
+              }
+          	});
+          });
+ 
 
-		var file    = document.querySelector('input[type=file]').files[0];
-  		var reader  = new FileReader();
-  		
-      	  
-         //  var formData = { 
-         //  	name: $("#name").val(),
-         //  	detail: $("#detail").val(),
-         //  	price: $("#price").val(),
-         //  	stock: $("#stock").val(),
-         //    image: $("#image").val()
-         //  };
-
-         // alert(formData);
-
-         //  $.ajax({
-         //      type 			: "POST",
-         //      data 			: JSON.stringify(formData),
-         //      ContentType 	: "application/json",
-         //      url			: "/inv_mgt/inventory/Create",
-         //      success: function(response){
-         //  		  alert("success");
-         //          //location.reload();
-         //      },
-         //      error: function(url){
-         //      	alert(JSON.stringify(formData));
-         //          alert("Error");
-         //      }
-         //  });
+          
  
       });
+
+      function showAlert(type){
+      	if (type === 'success') {
+      		$("#alert").append(
+               '<div class="alert alert-success " id="alert-success">' + 
+               		'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
+               		'<h4><i class="icon fa fa-check"></i> Success!</h4>'+
+               		'Data has been added'+
+               	'</div>'   	
+          	);
+      	}
+
+      	else if (type === 'failed') {
+      		$("#alert").append(
+               '<div class="alert alert-danger " id="alert-danger">' + 
+               		'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
+               		'<h4><i class="icon fa fa-check"></i> Failed!</h4>'+
+               		'Data has not been added'+
+               	'</div>'   	
+          	);
+      	}
+      }
 
       $(document).on("click", "#updateStockButton", function(){
           var id = $(this).val();
@@ -159,17 +192,17 @@
 
       $(document).on("click", "#deleteButton", function(){
           var id = $(this).val();
+          alert(id);
       
           $.ajax({
-              type: "DELETE",
-              contentType: "application/json",
-              url: "/inv_mgt/inventory/deleteById/" + id,
-              success: function(){
-                  alert("Product deleted");
-                  location.reload();
+              type 			: "DELETE",
+              contentType 	: "application/json",
+              url 			: "/inv_mgt/inventory/deleteById/" + id,
+              success : function(response){ 
+                  showAlert('success');
               },
-              error: function(url){
-                  alert("Error");
+              error : function(response){
+              	  showAlert('failed');
               }
           });
       });
@@ -243,14 +276,19 @@
 		<div class="col-md-12" style="padding: 0">
 			<div class="col-md-12"style="padding: 0" >
 				<h2  >Inventory</h2>
-			</div>
+			</div> 
+	      	<div id="alert">ad</div>
+	      	 
+		    
+            
+
 			<div class="col-md-10 coloumn" style="margin-bottom: 1em; padding: 0"> 
 				<div class="col-md-11" style="padding: 0;">
 					<form>
 					  <div class="input-group">
 					    <input type="text" class="form-control" placeholder="Search">
 					    <div class="input-group-btn">
-					      <button class="btn btn-default" type="submit">
+					      <button class="btn btn-default" type="submit" id="search">
 					        <i class="glyphicon glyphicon-search"></i>
 					      </button>
 					    </div>
@@ -289,26 +327,26 @@
 			        <h4 class="modal-title" style="text-align: center; color: green">Add New Inventory</h4>
 			      </div>
 			      <div class="modal-body">
-			         <form action="" method="POST">
+			         <form action="">
 			          <div class="form-group">
 					    <label for="name">Inventory Name</label>
-					    <input type="text" class="form-control" id="name" required="" readonly="">
+					    <input type="text" class="form-control" id="name" required="">
 					  </div>
 					  <div class="form-group">
 					    <label for="detail">Detail</label>
-					    <textarea class="form-control" rows="5" id="detail" required="" readonly=""></textarea>
+					    <textarea class="form-control" rows="5" id="detail" required=""></textarea>
 					  </div>
 					  <div class="form-group">
 					    <label for="price">Price</label>
-					    <input type="number" class="form-control" id="price" required="" min="1" readonly="">
+					    <input type="number" class="form-control" id="price" required="" min="1">
 					  </div>
 					  <div class="form-group">
 					    <label for="stock">Stock</label>
-					    <input type="number" class="form-control" id="stock" required="" min="1" readonly="">
+					    <input type="number" class="form-control" id="stock" required="" min="1">
 					  </div>
 					  <div class="form-group">
 					    <label for="image">Image</label>
-					    <input type="file"  id="image" name="image" required="">
+					    <input type="text" class="form-control" id="images" required="">
 					  </div>
 					  <button type="submit" class="btn btn-success" id="addButtonForm" style="width: 100%">Add New</button>
 					</form> 
@@ -361,7 +399,7 @@
 		    </div>
 		  </div>
 
-		  <!-- ===================================    Modal to Update     ============================================== -->
+		  <!-- ===================================    Modal to Update Stock    ============================================== -->
 		  <div class="modal fade" id="updateModal" role="dialog">
 		    <div class="modal-dialog">
 		   
