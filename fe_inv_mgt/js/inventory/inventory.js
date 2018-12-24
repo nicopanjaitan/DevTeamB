@@ -82,24 +82,25 @@ $(document).ready(function(){
         });
 
       },
-      error: function(){
-          alert("Error");
+      error: function(response){
+          alert(response);
       }
   });
 
   /* ================================================= VIEW DATA BY ID ===========================================================*/
-  $(document).on("click", "#viewButton", function(){
-      var id = $(this).val();
+  $(document).on("click", "#search", function(){
+     var id = $(this).val();
   	  $("#inventoryName").html('');
       $("#inventoryDetail").html('');
       $("#inventoryPrice").html('');
       $("#inventoryStock").html('');
-
+ 		alert('1');
       $.ajax({
 	    type 			: "GET",
 	    dataType 		: "json",
 	    url 			: "/inv_mgt/inventory/getById/" + id,
 	    success: function(response){
+	    	alert('s');
 	   		  
           $("#inventoryCode").append('<b>'+response.data.code+'</b>');
           $("#inventoryName").append(response.data.name);
@@ -108,18 +109,23 @@ $(document).ready(function(){
           $("#inventoryStock").append(response.data.stock);
 	           
 	    },
-	    error: function(url){
-          alert("Error");
+	    error: function(response){
+          if(response.data == null){
+          	alert(JSON.stringify(response) );
+          }
+          console.log(response );
 	    }
-      });
+      }); alert('1');
   });
 
-      
+   window.onerror = function (errorMsg, url, lineNumber) {
+    alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber);
+}   
   /* ================================================= SEARCH NEW DATA ===========================================================*/
   
-    $(document).on("click", "#search", function(){
-    	alert(getTime());
-    });
+    // $(document).on("click", "#search", function(){
+    // 	alert(getTime());
+    // });
 
   /* ================================================= ADD NEW DATA ===========================================================*/
 

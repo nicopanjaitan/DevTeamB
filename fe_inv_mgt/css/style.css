@@ -119,3 +119,73 @@ table{
 	color: white;
 	border-left-width: 0.5em;
 }
+
+
+/* =================== DASHBOARD =====================*/
+#formRequestBox, #inventoryBox, #employeeBox, #supervisorBox{ 
+	margin-bottom: 1em;
+	padding: 0;
+}
+ 
+#formRequestBox .row, #inventoryBox .row, #employeeBox .row, #supervisorBox .row{ 
+	padding: 0 1em 0 1em;
+}
+  
+#box-success, #box-info, #box-warning, #box-danger{
+	color: white; 
+	padding: 0; 
+	text-align: center;
+	margin-right: 1em;
+}
+
+#box-success{
+	background-color: #00a65a; 
+}
+
+#box-info{
+	background-color: #00c0ef;
+}
+
+#box-warning{
+	background-color: #f39c12;
+}
+
+#box-danger{
+	background-color: #f56954;
+}
+
+#box-success #box-bottom{
+	background-color: #008d4c; 
+}
+
+#box-info #box-bottom{
+	background-color: #00a7d0;
+}
+
+#box-warning #box-bottom{
+	background-color: #db8b0b;
+}
+
+#box-danger #box-bottom{
+	background-color: #d33724;
+}
+
+#box-up{ 
+	font-weight: bold;
+}
+
+#box-up h2{
+	font-size: 36px;
+}
+
+#box-bottom{ 
+	padding: 0.5em;
+}
+
+#box-bottom a{
+	color: white;
+}
+
+hr{ 
+	border-color: #ddd;
+}
