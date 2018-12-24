@@ -61,7 +61,7 @@ public class InventoryServiceImpl implements InventoryService {
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
-        return inventoryRepository.save(inventory);
+        return inventoryRepository.save(inventoryNew);
     }
 
     public Inventory updateInventoryByCode(String code, Inventory inventoryUpd) {
@@ -91,7 +91,6 @@ public class InventoryServiceImpl implements InventoryService {
         if(inventory == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }else{
-            inventory.setCode(code);
             inventory.setStock(stock);
             inventoryRepository.save(inventory);
         }
@@ -105,11 +104,9 @@ public class InventoryServiceImpl implements InventoryService {
         if (inventory == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
-        else{
-            inventoryRepository.deleteById(code);
-        }
 
-        return true;
+        return inventoryRepository.deleteByCodeEquals(code);
+
     }
 }
 

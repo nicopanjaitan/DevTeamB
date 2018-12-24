@@ -1,26 +1,121 @@
 /* NAVBAR*/
-#navbar, #body{
-	padding: 0 10em 0 10em;
+nav.navbar{
+	margin: 0; 
+	border-radius: 0; 
 }
+nav.navbar, .nav li a:focus{
+	background-color: rgb(60, 141, 188); /* blue as website navbar*/
+}
+nav .navbar-header{
+	background-color: rgb(54, 127, 169); /* dark blue for website title*/
+	position: fixed;
+}
+nav .navbar-header q{
+	padding: 0;
+}
+ 
 .nav li a, .navbar a{
 	color: white;
 }
-/* dropdown color */
-.nav ul li a:hover, ul.nav li:hover{
-	background-color: #4C66A4;
+.nav li a:hover, .nav li.open a:focus{
+	background-color: rgb(54, 127, 169);
 	color: white;
 }
-.nav ul, .nav ul li{
- 	background-color: #4a4747;
+
+ul.dropdown-menu{
+	background-color: rgb(60, 141, 188);
+	width: 75%;
+	padding: 0;
+}
+
+ul#dropdownTools{
+	background-color: #ddd;
+	width: 100%;
+	padding: 0;
+}
+ 
+ul#dropdown_navbar{
+	padding: 0.5em;
+	background-color: rgb(60, 141, 188);
+	width: 250px;
+	color: white;
+}
+
+/* ASIDE */
+#aside{  
+	background-color: rgb(51, 51, 51); /* black as website aside*/
+	position: fixed;
+	width: 100%;
+	height: 100%;
+}
+
+/* CONTENT */
+div.content{
+	padding: 1em;  
+}
+
+.content{
+	background-color: rgb(236, 240, 245);
+}
+table{
+	background-color: white;
+}
+
+#inv_table thead{
+	background-color:  rgb(54, 127, 169); /* blue as website navbar*/
+	color: white;
+}
+
+#viewButton, #updateButton, #deleteButton{
+	width: 100%;
+	text-align: left;
+	background-color: white;
+	border-bottom-color: #ddd;
+}
+
+#viewButton:hover, #updateButton:hover, #deleteButton:hover{
+	background-color: #f9f9f9;
+}
+
+#viewButton{
+	color: rgb(60, 141, 188);
+}
+
+#updateButton{
+	color: rgb(0, 166, 90);
+}
+
+#deleteButton{
+	color: rgb(221, 75, 57);
 }
 
 
-#navbar{
-	position: fixed-top;
+
+/* INFO */
+.alert-success{
+	background-color: rgb(0, 166, 90);
+	border-color: rgb(0, 115, 62);
+	color: white;
+	border-left-width: 0.5em;
 }
 
-/* BODY*/
-/* Sidebar*/
+.alert-info{
+	background-color: rgb(0, 192, 239);
+	border-color: rgb(0, 151, 188);
+	color: white;
+	border-left-width: 0.5em;
+}
 
+.alert-warning{
+	background-color: rgb(243, 156, 18);
+	border-color: rgb(200, 127, 10);;
+	color: white;
+	border-left-width: 0.5em;
+}
 
-/* FOOTER*/
+.alert-danger{
+	background-color: rgb(221, 75, 57);
+	border-color: rgb(215, 57, 37);
+	color: white;
+	border-left-width: 0.5em;
+}
