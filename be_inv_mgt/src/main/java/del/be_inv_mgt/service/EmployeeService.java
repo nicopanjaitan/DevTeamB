@@ -9,15 +9,13 @@ public interface EmployeeService {
 
     Employee getEmployeeById(String employeeID);
 
-    Employee getEmployeeByName(String name);
-
     List<Employee> getAllEmployeeBySupervisorId (String supervisorID);
 
     Employee createEmployee(Employee employee);
 
     Employee updateEmployeeById(String employeeID, Employee employee);
 
-    Employee updatePasswordById(String employeeID, String supervisorID);
+    Employee selectSupervisor(String employeeID, Employee supervisorID);
 
     boolean deleteEmployeeById(String employeeID);
 }

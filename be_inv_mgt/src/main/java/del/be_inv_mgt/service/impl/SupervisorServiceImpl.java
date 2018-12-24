@@ -35,16 +35,6 @@ public class SupervisorServiceImpl implements SupervisorService {
         return supervisor;
     }
 
-    public Supervisor getSupervisorByName(String name){
-        Supervisor supervisor = supervisorRepository.findByName(name);
-
-        if(supervisor == null){
-            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
-        }
-
-        return supervisor;
-    }
-
     public Supervisor createSupervisor(Supervisor supervisorNew){
         Supervisor supervisor = supervisorRepository.findByEmail(supervisorNew.getEmail());
 
@@ -52,7 +42,7 @@ public class SupervisorServiceImpl implements SupervisorService {
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
-        return supervisorRepository.save(supervisor);
+        return supervisorRepository.save(supervisorNew);
     }
 
     public Supervisor updateSupervisorById(String supervisorID, Supervisor supervisorUpd) {
@@ -61,9 +51,6 @@ public class SupervisorServiceImpl implements SupervisorService {
         if(supervisor == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }else{
-            supervisor.setSupervisorID(supervisorID);
-
-
             supervisor.setName(supervisorUpd.getName());
             supervisor.setEmail(supervisorUpd.getEmail());
             supervisor.setPassword(supervisorUpd.getPassword());
@@ -80,9 +67,8 @@ public class SupervisorServiceImpl implements SupervisorService {
         if(supervisor == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
-        else{
-            supervisorRepository.deleteById(supervisorID);
-        }
-        return true;
+
+        return supervisorRepository.deleteBySupervisorIDEquals(supervisorID);
+
     }
 }

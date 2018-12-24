@@ -25,16 +25,6 @@ public class InventoryServiceImpl implements InventoryService {
         return inventories;
     }
 
-    public List<Inventory> getAllEmployeeBySupervisorId(){
-        List<Inventory> inventories = inventoryRepository.findAll();
-
-        if(inventories.isEmpty()){
-            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
-        }
-
-        return inventories;
-    }
-
     public Inventory getInventoryByCode(String code){
         Inventory inventory = inventoryRepository.findByCode(code);
 
@@ -70,9 +60,6 @@ public class InventoryServiceImpl implements InventoryService {
         if(inventory == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }else{
-            inventory.setCode(code);
-            inventory.setId(inventory.getId());
-
             inventory.setName(inventoryUpd.getName());
             inventory.setDetail(inventoryUpd.getDetail());
             inventory.setPrice(inventoryUpd.getPrice());
@@ -92,6 +79,7 @@ public class InventoryServiceImpl implements InventoryService {
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }else{
             inventory.setStock(stock);
+
             inventoryRepository.save(inventory);
         }
 

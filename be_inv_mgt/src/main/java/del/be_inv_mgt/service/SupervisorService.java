@@ -11,11 +11,9 @@ public interface SupervisorService {
 
     Supervisor getSupervisorById(String supervisorID);
 
-    Supervisor getSupervisorByName(String supervisorID);
-
     Supervisor createSupervisor(Supervisor supervisorID);
 
     Supervisor updateSupervisorById(String supervisorID, Supervisor supervisor);
 
-    boolean deleteSupervisorById(String supervId);
+    boolean deleteSupervisorById(String supervisorID);
 }

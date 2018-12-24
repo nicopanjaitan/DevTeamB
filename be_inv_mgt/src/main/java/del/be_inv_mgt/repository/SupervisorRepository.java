@@ -9,4 +9,6 @@ public interface SupervisorRepository extends MongoRepository<Supervisor, String
     Supervisor findByName(String name);
 
     Supervisor findByEmail(String email);
+
+    Boolean deleteBySupervisorIDEquals(String supervisorID);
 }

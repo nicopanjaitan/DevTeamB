@@ -45,16 +45,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
-    public Employee getEmployeeByName(String name){
-        Employee employee = employeeRepository.findByName(name);
-
-        if(employee == null){
-            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
-        }
-
-        return employee;
-    }
-
     public Employee createEmployee(Employee employeeNew){
         Employee employee = employeeRepository.findByEmail(employeeNew.getEmail());
 
@@ -62,7 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
-        return employeeRepository.save(employee);
+        return employeeRepository.save(employeeNew);
     }
 
     public Employee updateEmployeeById(String employeeID, Employee employeeUpd) {
@@ -71,13 +61,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(employee == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }else{
-            employee.setEmployeeID(employeeID);
-            employee.setPassword(employee.getPassword());
-
             employee.setName(employeeUpd.getName());
             employee.setEmail(employeeUpd.getEmail());
+            employee.setPassword(employeeUpd.getPassword());
             employee.setAddress(employeeUpd.getAddress());
-            employee.setSupervisorID(employeeUpd.getSupervisorID());
 
             employeeRepository.save(employee);
         }
@@ -85,19 +72,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
-    public Employee updatePasswordById(String employeeID, String password) {
+    public Employee selectSupervisor(String employeeID, Employee employeeUpd) {
         Employee employee = employeeRepository.findByEmployeeID(employeeID);
 
         if(employee == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }else{
-            employee.setEmployeeID(employeeID);
-            employee.setName(employee.getName());
-            employee.setEmail(employee.getEmail());
-            employee.setAddress(employee.getAddress());
-            employee.setSupervisorID(employee.getSupervisorID());
-
-            employee.setPassword(password);
+            employee.setSupervisorID(employeeUpd.getSupervisorID());
 
             employeeRepository.save(employee);
         }
@@ -111,9 +92,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
-        else{
-            employeeRepository.deleteById(employeeID);
-        }
+
+        employeeRepository.deleteByEmployeeIDEquals(employeeID);
+
         return true;
+
     }
 }

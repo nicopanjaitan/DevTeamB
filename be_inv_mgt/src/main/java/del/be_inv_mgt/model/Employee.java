@@ -12,6 +12,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document(collection = "employee")
 public class Employee {
+    @Id
+    private String id;
+
+    @Indexed(unique = true)
     private String employeeID;
 
     private String name;

@@ -31,11 +31,6 @@ public class EmployeeController extends GlobalController {
         return toResponse(employeeService.getEmployeeById(employeeID));
     }
 
-    @GetMapping("/getByName/{name}")
-    public Response<Employee> getByName(@PathVariable String name){
-        return toResponse(employeeService.getEmployeeByName(name));
-    }
-
     @PostMapping("/create")
     public Response<Employee> create(@Valid @RequestBody Employee employee){
         return toResponse(employeeService.createEmployee(employee));
@@ -46,9 +41,9 @@ public class EmployeeController extends GlobalController {
         return toResponse(employeeService.updateEmployeeById(employeeID, employee));
     }
 
-    @PutMapping(value = "/updatePasswordById/{employeeID}")
-    public Response<Employee> updatePasswordById(@PathVariable String employeeID, @Valid @RequestBody Employee employee) {
-        return toResponse(employeeService.updatePasswordById(employeeID, employee.getPassword()));
+    @PutMapping(value = "/selectSupervisorById/{employeeID}")
+    public Response<Employee> selectSupervisorById(@PathVariable String employeeID, @Valid @RequestBody Employee supervisorID) {
+        return toResponse(employeeService.selectSupervisor(employeeID, supervisorID));
     }
 
     @DeleteMapping("/deleteById/{employeeID}")

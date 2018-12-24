@@ -21,14 +21,9 @@ public class SupervisorController extends GlobalController {
         return toResponse(supervisorService.getAllSupervisor());
     }
 
-    @GetMapping("/getById/{employeeID}")
+    @GetMapping("/getById/{supervisorID}")
     public Response<Supervisor> getById(@PathVariable String supervisorID){
         return toResponse(supervisorService.getSupervisorById(supervisorID));
-    }
-
-    @GetMapping("/getByName/{name}")
-    public Response<Supervisor> getByName(@PathVariable String name){
-        return toResponse(supervisorService.getSupervisorByName(name));
     }
 
     @PostMapping("/create")

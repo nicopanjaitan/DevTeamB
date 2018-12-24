@@ -8,9 +8,9 @@ import java.util.List;
 public interface EmployeeRepository extends MongoRepository<Employee, String> {
     Employee findByEmployeeID(String employeeID);
 
-    Employee findByName(String name);
-
     Employee findByEmail(String email);
 
     List<Employee> findEmployeeBySupervisorID(String supervisorID);
+
+    Boolean deleteByEmployeeIDEquals(String employeeID);
 }
