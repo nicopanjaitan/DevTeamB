@@ -17,73 +17,72 @@ public class FormRequestServiceImpl implements FormRequestService {
     @Autowired
     private FormRequestRepository formRequestRepository;
 
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
 
     public List<FormRequest> getAllRequest(){
-        List<FormRequest> requests = formRequestRepository.findAll();
+        List<FormRequest> formRequests = formRequestRepository.findAll();
 
-        if(requests.isEmpty()){
+        if(formRequests.isEmpty()){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
-        return requests;
+        return formRequests;
     }
 
     public FormRequest getRequestById(String requestID){
-        FormRequest request = formRequestRepository.findByRequestID(requestID);
+        FormRequest formRequest = formRequestRepository.findByRequestID(requestID);
 
-        if(request == null){
+        if(formRequest == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
-        return request;
+        return formRequest;
     }
 
     public List<FormRequest> getRequestByEmployeeId(String employeeID){
-        List<FormRequest> requests = formRequestRepository.findByEmployeeID(employeeID);
+        List<FormRequest> formRequests = formRequestRepository.findByEmployeeID(employeeID);
 
-        if(requests.isEmpty()){
+        if(formRequests.isEmpty()){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
-        return requests;
+        return formRequests;
     }
 
     public List<FormRequest> getRequestBySupervisorId(String supervisorID){
-        List<FormRequest> requests = formRequestRepository.findBySupervisorID(supervisorID);
+        List<FormRequest> formRequests = formRequestRepository.findBySupervisorID(supervisorID);
 
-        if(requests.isEmpty()){
+        if(formRequests.isEmpty()){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
-        return requests;
+        return formRequests;
     }
 
     public List<FormRequest> getRequestByStatus(String status){
-        List<FormRequest> requests = formRequestRepository.findByStatus(status);
+        List<FormRequest> formRequests = formRequestRepository.findByStatus(status);
 
-        if(requests.isEmpty()){
+        if(formRequests.isEmpty()){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
-        return requests;
+        return formRequests;
     }
 
-//    public List<FormRequest> getRequestByDateRequest(String supervisorID){
-//        List<FormRequest> requests = formRequestRepository.findAll();
-//
-//        if(requests.isEmpty()){
-//            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
-//        }
-//
-//        return requests;
-//    }
+    public List<FormRequest> getRequestByDateRequest(String supervisorID){
+        List<FormRequest> formRequests = formRequestRepository.findAll();
+
+        if(formRequests.isEmpty()){
+            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        return formRequests;
+    }
 
     public FormRequest createRequest(FormRequest requestNew){
-        FormRequest request = formRequestRepository.findByRequestID(requestNew.getRequestID());
+        FormRequest formRequests = formRequestRepository.findByRequestID(requestNew.getRequestID());
 
-        if (request != null){
+        if (formRequests != null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
@@ -91,91 +90,72 @@ public class FormRequestServiceImpl implements FormRequestService {
     }
 
     public FormRequest updateRequestById(String requestID, FormRequest requestUpd) {
-        FormRequest request = formRequestRepository.findByRequestID(requestID);
+        FormRequest formRequests = formRequestRepository.findByRequestID(requestID);
 
-        if (request == null){
+        if (formRequests == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
         else{
             //data lama
-            request.setId(request.getId());
-            request.setRequestID(request.getRequestID());
-            request.setInventoryID(request.getInventoryID());
-            request.setEmployeeID(request.getEmployeeID());
-            request.setSupervisorID(request.getSupervisorID());
-            request.setDateRequest(request.getDateRequest());
-            request.setDateReceived(request.getDateReceived());
-            request.setStatus(request.getStatus());
+            formRequests.setId(formRequests.getId());
+            formRequests.setRequestID(formRequests.getRequestID());
+            formRequests.setInventoryID(formRequests.getInventoryID());
+            formRequests.setEmployeeID(formRequests.getEmployeeID());
+            formRequests.setSupervisorID(formRequests.getSupervisorID());
+            formRequests.setDateRequest(formRequests.getDateRequest());
+            formRequests.setDateReceived(formRequests.getDateReceived());
+            formRequests.setStatus(formRequests.getStatus());
 
             //data baru
-            request.setDestination(requestUpd.getDestination());
-            request.setQtyRequest(requestUpd.getQtyRequest());
+            formRequests.setDestination(requestUpd.getDestination());
+            formRequests.setQtyRequest(requestUpd.getQtyRequest());
 
-            formRequestRepository.save(request);
+            formRequestRepository.save(formRequests);
         }
 
-        return requestUpd;
+        return formRequests;
     }
 
     public FormRequest handoverRequestById(String requestID, String status) {
-        FormRequest request = formRequestRepository.findByRequestID(requestID);
 
-        if (request == null){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        FormRequest formRequests = formRequestRepository.findByRequestID(requestID);
+
+        if (formRequests == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
         else{
-            //data lama
-            request.setId(request.getId());
-            request.setRequestID(request.getRequestID());
-            request.setInventoryID(request.getInventoryID());
-            request.setEmployeeID(request.getEmployeeID());
-            request.setSupervisorID(request.getSupervisorID());
-            request.setDateRequest(request.getDateRequest());
-            request.setDestination(request.getDestination());
-            request.setQtyRequest(request.getQtyRequest());
-
             //data baru
-            request.setDateReceived(dtf.format(now));
-            request.setStatus(status);
+            formRequests.setDateReceived(dtf.format(now));
+            formRequests.setStatus(status);
 
-            formRequestRepository.save(request);
+            formRequestRepository.save(formRequests);
         }
 
-        return request;
+        return formRequests;
     }
 
     public FormRequest rejectRequestById(String requestID, String status) {
-        FormRequest request = formRequestRepository.findByRequestID(requestID);
+        FormRequest formRequests = formRequestRepository.findByRequestID(requestID);
 
-        if (request == null){
+        if (formRequests == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
         else{
-            //data lama
-            request.setId(request.getId());
-            request.setRequestID(request.getRequestID());
-            request.setInventoryID(request.getInventoryID());
-            request.setEmployeeID(request.getEmployeeID());
-            request.setSupervisorID(request.getSupervisorID());
-            request.setDateRequest(request.getDateRequest());
-            request.setDestination(request.getDestination());
-            request.setQtyRequest(request.getQtyRequest());
-            request.setDateReceived(request.getDateReceived());
-
             //data baru
-            request.setStatus(status);
+            formRequests.setStatus(status);
 
-            formRequestRepository.save(request);
+            formRequestRepository.save(formRequests);
         }
 
-        return request;
+        return formRequests;
     }
 
 
     public boolean deleteRequestById(String requestID) {
-        FormRequest request = formRequestRepository.findByRequestID(requestID);
+        FormRequest formRequests = formRequestRepository.findByRequestID(requestID);
 
-        if (request == null){
+        if (formRequests == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
         else{

@@ -15,11 +15,9 @@ public interface FormRequestService {
 
     List<FormRequest> getRequestByStatus(String status);
 
-//    List<FormRequest> getRequestByDateRequest(String dateRequest);
+    FormRequest createRequest(FormRequest formRequests);
 
-    FormRequest createRequest(FormRequest request);
-
-    FormRequest updateRequestById(String requestID, FormRequest request);
+    FormRequest updateRequestById(String requestID, FormRequest formRequests);
 
     FormRequest handoverRequestById(String requestID, String newStatus);
 
