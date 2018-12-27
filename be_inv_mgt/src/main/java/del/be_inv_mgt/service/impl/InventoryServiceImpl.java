@@ -8,6 +8,8 @@ import del.be_inv_mgt.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -50,6 +52,8 @@ public class InventoryServiceImpl implements InventoryService {
         if (inventory != null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
+
+        inventoryNew.setCode("inv_"+getDate());
 
         return inventoryRepository.save(inventoryNew);
     }
@@ -95,6 +99,15 @@ public class InventoryServiceImpl implements InventoryService {
 
         return inventoryRepository.deleteByCodeEquals(code);
 
+    }
+
+    static String getDate(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        LocalDateTime now = LocalDateTime.now();
+
+        String dateTimeNow = dtf.format(now);
+
+        return dateTimeNow;
     }
 }
 
