@@ -41,9 +41,9 @@ public class FormRequestController extends GlobalController {
         return toResponse(formRequestService.getRequestByStatus(status));
     }
 
-    @PostMapping("/create")
-    public Response<FormRequest> create(@Valid @RequestBody FormRequest formRequest){
-        return toResponse(formRequestService.createRequest(formRequest));
+    @PostMapping("/create/{employeeID}")
+    public Response<FormRequest> create(@PathVariable String employeeID, @Valid @RequestBody FormRequest formRequest){
+        return toResponse(formRequestService.createRequest(formRequest, employeeID));
     }
 
     @PutMapping(value = "/updateById/{requestID}")
@@ -51,14 +51,19 @@ public class FormRequestController extends GlobalController {
         return toResponse(formRequestService.updateRequestById(requestID, formRequest));
     }
 
-    @PutMapping(value = "/handoverById/{requestID}")
-    public Response<FormRequest> handoverById(@PathVariable String requestID, @Valid @RequestBody FormRequest formRequest) {
-        return toResponse(formRequestService.handoverRequestById(requestID, formRequest.getStatus()));
+    @PutMapping(value = "/approvedById/{requestID}")
+    public Response<FormRequest> approvedById(@PathVariable String requestID) {
+        return toResponse(formRequestService.approvedRequestById(requestID));
     }
 
     @PutMapping(value = "/rejectById/{requestID}")
-    public Response<FormRequest> rejectById(@PathVariable String requestID, @Valid @RequestBody FormRequest formRequest) {
-        return toResponse(formRequestService.rejectRequestById(requestID, formRequest.getStatus()));
+    public Response<FormRequest> rejectById(@PathVariable String requestID) {
+        return toResponse(formRequestService.rejectRequestById(requestID));
+    }
+
+    @PutMapping(value = "/handoverById/{requestID}")
+    public Response<FormRequest> handoverById(@PathVariable String requestID) {
+        return toResponse(formRequestService.handoverRequestById(requestID));
     }
 
     @DeleteMapping("/deleteById/{requestID}")

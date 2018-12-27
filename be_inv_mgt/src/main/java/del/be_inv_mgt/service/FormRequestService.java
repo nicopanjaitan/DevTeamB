@@ -15,13 +15,15 @@ public interface FormRequestService {
 
     List<FormRequest> getRequestByStatus(String status);
 
-    FormRequest createRequest(FormRequest formRequests);
+    FormRequest createRequest(FormRequest formRequests, String employeeID);
 
     FormRequest updateRequestById(String requestID, FormRequest formRequests);
 
-    FormRequest handoverRequestById(String requestID, String newStatus);
+    FormRequest approvedRequestById(String requestID);
 
-    FormRequest rejectRequestById(String requestID, String newStatus);
+    FormRequest rejectRequestById(String requestID);
+
+    FormRequest handoverRequestById(String requestID);
 
     boolean deleteRequestById(String requestID);
 }

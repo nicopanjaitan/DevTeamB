@@ -17,7 +17,6 @@ public class FormRequest {
     @Id
     private String id;
 
-    //untuk id transaksi yg dpt di publikasi
     @Indexed(unique = true)
     private String requestID;
 
