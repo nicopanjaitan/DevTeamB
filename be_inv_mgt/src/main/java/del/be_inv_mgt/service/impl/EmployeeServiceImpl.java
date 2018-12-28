@@ -8,6 +8,8 @@ import del.be_inv_mgt.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -51,6 +53,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(employee != null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
+
+        employeeNew.setEmployeeID("emp_"+getDate());
 
         return employeeRepository.save(employeeNew);
     }
@@ -97,5 +101,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         return true;
 
+    }
+
+    static String getDate(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        LocalDateTime now = LocalDateTime.now();
+
+        String dateTimeNow = dtf.format(now);
+
+        return dateTimeNow;
     }
 }

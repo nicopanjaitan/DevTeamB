@@ -14,4 +14,6 @@ public interface FormRequestRepository extends MongoRepository<FormRequest, Stri
     List<FormRequest> findBySupervisorID(String supervisorID);
 
     List<FormRequest> findByStatus(String supervisorID);
+
+    Boolean deleteByRequestIDEquals(String requestID);
 }

@@ -8,6 +8,8 @@ import del.be_inv_mgt.service.SupervisorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -42,6 +44,8 @@ public class SupervisorServiceImpl implements SupervisorService {
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
+        supervisorNew.setSupervisorID("sup_"+getDate());
+
         return supervisorRepository.save(supervisorNew);
     }
 
@@ -70,5 +74,14 @@ public class SupervisorServiceImpl implements SupervisorService {
 
         return supervisorRepository.deleteBySupervisorIDEquals(supervisorID);
 
+    }
+
+    static String getDate(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        LocalDateTime now = LocalDateTime.now();
+
+        String dateTimeNow = dtf.format(now);
+
+        return dateTimeNow;
     }
 }
