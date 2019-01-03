@@ -1,62 +1,21 @@
 /* =================================  INVENTORY  ================================== */
 $(document).ready(function(){
+  $('.js-example-basic-single').select2();  
 
-  function getTime(){
-    var timeNow = new Date();
-    var date = timeNow.getDate();
-    var month = timeNow.getMonth();
-    var year = timeNow.getFullYear();
-    var hours   = timeNow.getHours();
-    var minutes = timeNow.getMinutes();
-    var seconds = timeNow.getSeconds();
 
-    var hourss = hours;
-
-    if(hours < 10){
-      hourss = '0'+ hours;
-    }
-
-    var dateTime = date + '' + month + '' + year + '' + hourss + '' + minutes + '' + seconds;
-
-    return dateTime;
-  } 
-
-  function showAlert(type){
-    if (type === 'Success') {
-        $("#alert").append(
-           '<div class="alert alert-success " id="alert-success">' + 
-              '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
-              '<h4><i class="icon fa fa-check"></i> Success!</h4>'+
-              'Data has been added'+
-            '</div>'    
-        );
-    }
-
-    else if (type === 'null') {
-        $("#alert").append(
-           '<div class="alert alert-danger " id="alert-danger">' + 
-              '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
-              '<h4><i class="icon fa fa-check"></i> Failed!</h4>'+
-              'Data has not been added'+
-            '</div>'    
-        );
-    }
-  }
-
-   
 
   /* ================================================= VIEW ALL DATA ===========================================================*/
   var inv_data = '';
 
   $.ajax({
-      type 			: "GET",
-      url 			: "/inv_mgt/inventory/getAll",
-      contentType 	: "application/json",
+      type        : "GET",
+      url         : "/inv_mgt/inventory/getAll",
+      contentType : "application/json",
       dataType  	: "json",
       success: function(response){
 
         $.each(response.data, function (i, inventory) {   
-          $("#inv_table").append(
+          $("#main_table").append(
             '<tr>'
               +'<td>' + (i+1) + '</td>'
               +'<td>' + inventory.name + '</td>'
@@ -65,16 +24,16 @@ $(document).ready(function(){
               +'<td>' + inventory.image + '</td>'
               +'<td class="col-md-1">' +  
                 '<div class="dropdown">'+
-		    		'<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="icon fa fa-wrench"></i> Tools</button>'+
-		    		'<ul class="dropdown-menu dropdown-menu-right" id="dropdownTools">'+
-				      '<li><button id="viewButton" class="btn" value="' + inventory.code + '" '+
-                			'data-toggle="modal" data-target="#viewModal" ><i class="icon fa fa-eye"></i> View</button></li>'+
-        			  '<li><button id="updateButton" class="btn" value="' + inventory.code + '" '+
-                			'data-toggle="modal" data-target="#updateModal" ><i class="icon fa fa-edit"></i> Edit</button></li>'+ 
-                	  '<li><button id="deleteButton" class="btn" value="' + inventory.code + '" >'+
-                	  		'<i class="icon fa fa-trash"></i> Delete</button></li>'+ 
-		    		'</ul>'+
-		  		'</div>'
+      		    		'<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="icon fa fa-wrench"></i> Tools</button>'+
+      		    		'<ul class="dropdown-menu dropdown-menu-right" id="dropdownTools">'+
+      				      '<li><button id="viewButton" class="btn" value="' + inventory.code + '" '+
+                      			'data-toggle="modal" data-target="#viewModal" ><i class="icon fa fa-eye"></i> View</button></li>'+
+              			  '<li><button id="updateButton" class="btn" value="' + inventory.code + '" '+
+                      			'data-toggle="modal" data-target="#updateModal" ><i class="icon fa fa-edit"></i> Edit</button></li>'+ 
+                      	  '<li><button id="deleteButton" class="btn" value="' + inventory.code + '" >'+
+                      	  		'<i class="icon fa fa-trash"></i> Delete</button></li>'+ 
+      		    		'</ul>'+
+      		  		'</div>'
               +'</td>' +
             '</tr>'
             ); 
@@ -122,34 +81,91 @@ $(document).ready(function(){
     });
 
   /* ================================================= ADD NEW DATA ===========================================================*/
+  // $(document).on("click", "#addButtonForm", function(event){
+  //    // event.preventDefault();
+  //     ajaxSubmitForm();
+  // });
 
-  
-  $(document).on("click", "#addButtonForm", function(){
-	  var form = document.getElementById('addForm');  
-	  var dataForm = ConvertFormToJSON(form);
-
-      var formData = { 
-        code: 'inv_' + getTime(),
-        name: $("#name").val(),
-        detail: $("#detail").val(),
-        price: $("#price").val(),
-        stock: $("#stock").val(),
-        image: $("#images").val()
-      };
-
-      $.ajax({
-          type      	: "POST",
-          data      	: JSON.stringify(dataForm),
-          contentType   : "application/json",
-          url      		: "/inv_mgt/inventory/create",
-          success: function(response){  
-            
-          },
-          error: function(response){ 
-          }
-        }).responseText;
-
+  $("#addForm").submit(function(){
+       ajaxSubmitForm();
   });
+  
+  function ajaxSubmitForm() {
+ 
+    // Get form
+    var form = $('#addForm')[0]; 
+    var f_data = new FormData(form);
+    
+    f_data.append("code", null);
+    //alert(f_data.get('image').getA);
+
+    $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: "/inv_mgt/inventory/create",
+        data: f_data,
+        dataType:"json",
+ 
+        // prevent jQuery from automatically transforming the data into a query string
+        processData: false,
+        contentType: false,
+        cache: false,
+        timeout: 5000,
+        success: function(response){
+          console.log('1');
+            $("#alert").html('');
+            if(response.code == 200){
+              jQuery("#addModal").modal("hide");
+              showAllert(response.code, response.code + ' ' + response.message + "!", "Data has been added.");  
+              setTimeout(function(){ location.reload(); }, 1000);
+              console.log('2');
+            } 
+            else{
+              $("#alert").html('');
+              jQuery("#addModal").modal("hide");
+              showAllert(response.code, response.code + ' ' + response.message + "!", "Something error.");  
+              console.log('3');
+           } 
+           console.log('4');
+           alert('ini');
+        },
+        error: function(response){
+          console.log('5');
+            
+        }
+    });
+
+    alert('wq45');
+
+  }
+
+  // $(document).on("click", "#addButtonForm", function(){
+	 //  var form = document.getElementById('addForm');  
+	 //  var dataForm = ConvertFormToJSON(form);
+
+  //     var formData = { 
+  //       code: 'inv_' + getTime(),
+  //       name: $("#name").val(),
+  //       detail: $("#detail").val(),
+  //       price: $("#price").val(),
+  //       stock: $("#stock").val()
+  //     };
+
+  //     $.ajax({
+  //         type      	: "POST",
+  //         enctype: 'multipart/form-data',
+  //         data      	: JSON.stringify(dataForm),
+  //         contentType   : "application/json",
+  //         url      		: "/inv_mgt/inventory/create",
+  //         success: function(response){  
+  //           alert("udh");
+  //         },
+  //         error: function(response){ 
+  //           alert("gk");
+  //         }
+  //       }).responseText;
+
+  // });
 
       
   /* ================================================= UPDATE STOCK INVENTORY ===========================================================*/
@@ -192,7 +208,7 @@ $(document).ready(function(){
      
   });
 
-  $(document).on("click", "#stockButtonForm", function(){ 
+  $(document).on("click", "#stockButtonForm", function(e){ 
 	  var id = $(this).val(); 
 
 	  var formData = {
@@ -204,7 +220,7 @@ $(document).ready(function(){
 	      url     		: "/inv_mgt/inventory/updateStockById/" + id,
 	      data       	: JSON.stringify(formData),
 	      contentType   : "application/json",
-		  dataType  	: "json",
+		    dataType  	: "json",
 	      success : function(response){ 
 	      },
 	      error : function(response){ 
@@ -296,6 +312,39 @@ $(document).ready(function(){
   });
 
 
+  /* ======================================= CONVERT FORM =======================================================*/
+  function ConvertFormToJSON(form){
+    var array = jQuery(form).serializeArray();
+    var json = {};
+    
+    jQuery.each(array, function() {
+        json[this.name] = this.value || '';
+    });
+    
+    return json;
+  }
+
+
+
+  /* ============================================== ALERT ========================================================*/
+  function showAllert(code, message, description){
+    if (code == 200) {
+        $("#alert").append(
+           '<div class="alert alert-success " id="alert-success">' + 
+              '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
+              '<h4><i class="icon fa fa-check"></i> '+ message +'</h4>'+ description +
+            '</div>'    
+        );
+    }
+    else{
+        $("#alert").append(
+           '<div class="alert alert-danger " id="alert-success">' + 
+              '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
+              '<h4><i class="icon fa fa-ban"></i> '+ message +'</h4>'+ description +
+            '</div>'    
+        );
+    }
+  }
 
 
 

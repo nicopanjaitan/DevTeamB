@@ -48,6 +48,11 @@ ul#dropdown_navbar{
 	width: 100%;
 	height: 100%;
 }
+#aside_a{
+	padding: 0; 
+	margin: 0; 
+	height: 600px; 
+}
 
 /* CONTENT */
 div.content{
@@ -61,7 +66,7 @@ table{
 	background-color: white;
 }
 
-#inv_table thead{
+#main_table thead{
 	background-color:  rgb(54, 127, 169); /* blue as website navbar*/
 	color: white;
 }
@@ -119,3 +124,18 @@ table{
 	color: white;
 	border-left-width: 0.5em;
 }
+
+.select2-container .select2-selection--single{
+	height: 34px;
+}
+
+#divTitle{
+	padding: 0;
+}
+
+#divAddButton{
+	padding: 1em 0 0 0 ;
+	text-align: right;
+	float: bottom;
+}
+
