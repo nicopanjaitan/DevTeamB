@@ -16,4 +16,6 @@ public interface SupervisorService {
     Supervisor updateSupervisorById(String supervisorID, Supervisor supervisor);
 
     boolean deleteSupervisorById(String supervisorID);
+
+    Supervisor login(Supervisor employee);
 }

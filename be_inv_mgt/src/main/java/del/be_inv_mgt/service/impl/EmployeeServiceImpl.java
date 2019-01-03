@@ -51,7 +51,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findByEmail(employeeNew.getEmail());
 
         if(employee != null){
-            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+            throw new ResourceNotFoundException(ErrorCode.BAD_REQUEST.getCode(), ErrorCode.BAD_REQUEST.getMessage());
         }
 
         employeeNew.setEmployeeID("emp_"+getDate());
@@ -97,10 +97,24 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
-        employeeRepository.deleteByEmployeeIDEquals(employeeID);
+        employeeRepository.deleteByEmployeeID(employeeID);
 
         return true;
 
+    }
+
+    public Employee login(Employee employeelogin){
+        Employee employee = employeeRepository.findByEmail(employeelogin.getEmail());
+
+        if(employee == null){
+            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        if(!employee.getPassword().equals(employeelogin.getPassword())){
+            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        return employee;
     }
 
     static String getDate(){

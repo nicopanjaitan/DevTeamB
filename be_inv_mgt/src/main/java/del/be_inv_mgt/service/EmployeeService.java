@@ -18,4 +18,6 @@ public interface EmployeeService {
     Employee selectSupervisor(String employeeID, Employee supervisorID);
 
     boolean deleteEmployeeById(String employeeID);
+
+    Employee login(Employee employee);
 }

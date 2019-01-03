@@ -41,7 +41,7 @@ public class SupervisorServiceImpl implements SupervisorService {
         Supervisor supervisor = supervisorRepository.findByEmail(supervisorNew.getEmail());
 
         if(supervisor != null){
-            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+            throw new ResourceNotFoundException(ErrorCode.BAD_REQUEST.getCode(), ErrorCode.BAD_REQUEST.getMessage());
         }
 
         supervisorNew.setSupervisorID("sup_"+getDate());
@@ -72,8 +72,24 @@ public class SupervisorServiceImpl implements SupervisorService {
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
-        return supervisorRepository.deleteBySupervisorIDEquals(supervisorID);
+        supervisorRepository.deleteBySupervisorID(supervisorID);
 
+        return true;
+
+    }
+
+    public Supervisor login(Supervisor supervisorlogin){
+        Supervisor supervisor = supervisorRepository.findByEmail(supervisorlogin.getEmail());
+
+        if(supervisor == null){
+            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        if(!supervisor.getPassword().equals(supervisorlogin.getPassword())){
+            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        return supervisor;
     }
 
     static String getDate(){
