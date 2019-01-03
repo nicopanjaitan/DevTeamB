@@ -1,9 +1,9 @@
 package del.be_inv_mgt.model.respon;
 
 public enum ErrorCode {
-    NOT_FOUND("404", "Not Found"),
-    BAD_REQUEST("400", "Data not valid"),
-    INTERNAL_SERVER_ERROR("500", "System fault"),
+    BAD_REQUEST("400", "Bad Request Error"),
+    NOT_FOUND("404", "Not Found Error"),
+    SERVER_ERROR("500", "Internal Server Error"),
     OK("200", "Success");
 
     private String code;
