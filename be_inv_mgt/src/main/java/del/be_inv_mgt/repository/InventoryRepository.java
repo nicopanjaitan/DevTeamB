@@ -12,5 +12,5 @@ public interface InventoryRepository extends MongoRepository<Inventory, String> 
 
     List<Inventory> findAllByName(String name);
 
-    Boolean deleteByCodeEquals(String code);
+    void deleteByCode(String code);
 }

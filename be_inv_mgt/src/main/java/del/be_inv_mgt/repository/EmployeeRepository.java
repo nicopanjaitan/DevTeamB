@@ -12,5 +12,5 @@ public interface EmployeeRepository extends MongoRepository<Employee, String> {
 
     List<Employee> findEmployeeBySupervisorID(String supervisorID);
 
-    Boolean deleteByEmployeeIDEquals(String employeeID);
+    void deleteByEmployeeID(String employeeID);
 }
