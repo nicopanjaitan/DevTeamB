@@ -18,8 +18,6 @@ public class FormRequestServiceImpl implements FormRequestService {
     @Autowired
     private FormRequestRepository formRequestRepository;
 
-    LocalDateTime now = LocalDateTime.now();
-
     public List<FormRequest> getAllRequest(){
         List<FormRequest> formRequests = formRequestRepository.findAll();
 
@@ -90,7 +88,7 @@ public class FormRequestServiceImpl implements FormRequestService {
         }
 
         if(!formRequests.getStatus().equals(Status.Pending.toString()) ){
-            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+            throw new ResourceNotFoundException(ErrorCode.BAD_REQUEST.getCode(), ErrorCode.BAD_REQUEST.getMessage());
         }
 
         formRequests.setInventoryID(requestUpd.getInventoryID());
@@ -110,7 +108,7 @@ public class FormRequestServiceImpl implements FormRequestService {
         }
 
         if(!formRequests.getStatus().equals(Status.Pending.toString())){
-            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+            throw new ResourceNotFoundException(ErrorCode.BAD_REQUEST.getCode(), ErrorCode.BAD_REQUEST.getMessage());
         }
 
         formRequests.setStatus(Status.Approved.toString());
@@ -127,7 +125,7 @@ public class FormRequestServiceImpl implements FormRequestService {
         }
 
         if(!formRequests.getStatus().equals(Status.Pending.toString())){
-            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+            throw new ResourceNotFoundException(ErrorCode.BAD_REQUEST.getCode(), ErrorCode.BAD_REQUEST.getMessage());
         }
 
         formRequests.setStatus(Status.Rejected.toString());
@@ -143,7 +141,7 @@ public class FormRequestServiceImpl implements FormRequestService {
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
         if(!formRequests.getStatus().equals(Status.Approved.toString())){
-            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+            throw new ResourceNotFoundException(ErrorCode.BAD_REQUEST.getCode(), ErrorCode.BAD_REQUEST.getMessage());
         }
 
         formRequests.setDateReceived(getDate("yyyy/MM/dd HH:mm:ss"));
@@ -160,7 +158,9 @@ public class FormRequestServiceImpl implements FormRequestService {
         if (formRequests == null){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
-        return formRequestRepository.deleteByRequestIDEquals(requestID);
+        formRequestRepository.deleteByRequestID(requestID);
+
+        return true;
 
     }
 

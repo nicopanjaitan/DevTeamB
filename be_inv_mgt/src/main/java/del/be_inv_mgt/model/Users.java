@@ -8,19 +8,19 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "users")
-public class User {
+public class Users {
     @Id
-    private String userID;
-
-    private String name;
+    private String id;
 
     @Indexed(unique = true)
-    private String email;
+    private String username;
 
     private String password;
 
-    private String address;
-
     private String role;
+
+    private boolean active;
 }

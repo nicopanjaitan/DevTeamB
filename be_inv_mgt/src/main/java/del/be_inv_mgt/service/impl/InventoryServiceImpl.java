@@ -46,14 +46,20 @@ public class InventoryServiceImpl implements InventoryService {
         return inventory;
     }
 
-    public Inventory createInventory(Inventory inventoryNew){
-        Inventory inventory = inventoryRepository.findByCode(inventoryNew.getCode());
+    public Inventory createInventory(Inventory inventoryNew, String image){
+        Inventory inventory = inventoryRepository.findByName(inventoryNew.getName());
 
         if (inventory != null){
-            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+            throw new ResourceNotFoundException(ErrorCode.BAD_REQUEST.getCode(), ErrorCode.BAD_REQUEST.getMessage());
         }
 
         inventoryNew.setCode("inv_"+getDate());
+        if(image == null){
+            inventoryNew.setImage("/images/inventory/ims_logo.png");
+        }
+        else {
+            inventoryNew.setImage("/images/inventory/" + image);
+        }
 
         return inventoryRepository.save(inventoryNew);
     }
@@ -97,7 +103,9 @@ public class InventoryServiceImpl implements InventoryService {
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
-        return inventoryRepository.deleteByCodeEquals(code);
+        inventoryRepository.deleteByCode(code);
+
+        return true;
 
     }
 

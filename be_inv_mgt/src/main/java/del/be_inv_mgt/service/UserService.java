@@ -1,17 +1,17 @@
 package del.be_inv_mgt.service;
 
-import del.be_inv_mgt.model.User;
+import del.be_inv_mgt.model.Users;
 
 import java.util.List;
 
 public interface UserService {
-//    List<User> getAllUser();
+    List<Users> getAllUser();
+
+//    Users getUserById(String userId);
+
+    Users createUser(Users users);
 //
-//    User getUserById(String userId);
-//
-//    User createUser(User user);
-//
-//    User updateUserById(String userId, User user);
+//    Users updateUserById(String userId, Users user);
 //
 //    int deleteUserById(String userId);
 }
