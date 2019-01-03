@@ -7,6 +7,7 @@ import del.be_inv_mgt.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -49,6 +50,11 @@ public class EmployeeController extends GlobalController {
     @DeleteMapping("/deleteById/{employeeID}")
     public Response<Boolean> deleteById(@PathVariable String employeeID) {
         return toResponse(employeeService.deleteEmployeeById(employeeID));
+    }
+
+    @PostMapping("/login")
+    public Response<Employee> login(@Valid @RequestBody Employee employee) {
+        return toResponse(employeeService.login(employee));
     }
 
 

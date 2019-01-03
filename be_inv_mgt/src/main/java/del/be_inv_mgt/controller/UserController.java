@@ -1,36 +1,38 @@
 package del.be_inv_mgt.controller;
 
-import del.be_inv_mgt.model.User;
-import del.be_inv_mgt.service.UserService;
+import del.be_inv_mgt.model.Users;
+import del.be_inv_mgt.model.respon.Response;
+import del.be_inv_mgt.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/inv_mgt/user")
 public class UserController {
-//    @Autowired
-//    private UserService userService;
-//
-//    @GetMapping("/getAll")
-//    public List<User> getAllUser(){
-//        return userService.getAllUser();
-//    }
+    @Autowired
+    private UserServiceImpl userService;
+
+    @GetMapping("/log/{username}")
+    public UserDetails getById(@PathVariable String username){
+        return userService.loadUserByUsername(username);
+    }
+
+
 //
 //    @GetMapping("/getById/{id}")
-//    public User getById(@PathVariable("id") String userId){
+//    public Users getById(@PathVariable("id") String userId){
 //        return userService.getUserById(userId);
 //    }
 //
 //    @PostMapping("/create")
-//    public User create(@Valid @RequestBody User user){
+//    public Users create(@Valid @RequestBody Users user){
 //        return userService.createUser(user);
 //    }
 //
 //    @PutMapping(value = "/updateById/{id}")
-//    public User updateById(@PathVariable("id") String invId, @Valid @RequestBody User user) {
+//    public Users updateById(@PathVariable("id") String invId, @Valid @RequestBody Users user) {
 //        user.set_id(invId);
 //        userService.updateUserById(invId, user);
 //        return user;

@@ -40,4 +40,9 @@ public class SupervisorController extends GlobalController {
     public Response<Boolean> deleteById(@PathVariable String supervisorID) {
         return toResponse(supervisorService.deleteSupervisorById(supervisorID));
     }
+
+    @PostMapping("/login")
+    public Response<Supervisor> login(@Valid @RequestBody Supervisor supervisor) {
+        return toResponse(supervisorService.login(supervisor));
+    }
 }
