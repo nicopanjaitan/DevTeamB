@@ -10,7 +10,7 @@ public interface InventoryService {
 
     Inventory getInventoryByCode(String code);
 
-    Inventory getInventoryByName(String name);
+    List<Inventory> getInventoryByName(String name);
 
     Inventory createInventory(Inventory inventory, String image);
 

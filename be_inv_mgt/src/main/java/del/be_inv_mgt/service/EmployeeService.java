@@ -11,6 +11,8 @@ public interface EmployeeService {
 
     List<Employee> getAllEmployeeBySupervisorId (String supervisorID);
 
+    List<Employee> getAllEmployeeByName(String name);
+
     Employee createEmployee(Employee employee);
 
     Employee updateEmployeeById(String employeeID, Employee employee);

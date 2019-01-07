@@ -1,109 +1,197 @@
 /* =================================  INVENTORY  ================================== */
 $(document).ready(function(){
   $('.js-example-basic-single').select2();  
-
-
-
+ 
   /* ================================================= VIEW ALL DATA ===========================================================*/
-  var inv_data = '';
+  viewAll();
 
-  $.ajax({
-      type        : "GET",
-      url         : "/inv_mgt/inventory/getAll",
-      contentType : "application/json",
-      dataType  	: "json",
-      success: function(response){
+  function viewAll(){
+     $("#table-content").html('');
 
-        $.each(response.data, function (i, inventory) {   
-          $("#main_table").append(
-            '<tr>'
-              +'<td>' + (i+1) + '</td>'
-              +'<td>' + inventory.name + '</td>'
-              +'<td>' + inventory.price + '</td>'
-              +'<td><div id="stockForm"> <button class="btn" id="stockButton" value="' + inventory.code + '"><i class="icon fa fa-edit" ></i></button>&emsp;' + inventory.stock + ' </div></td>'
-              +'<td>' + inventory.image + '</td>'
-              +'<td class="col-md-1">' +  
-                '<div class="dropdown">'+
-      		    		'<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="icon fa fa-wrench"></i> Tools</button>'+
-      		    		'<ul class="dropdown-menu dropdown-menu-right" id="dropdownTools">'+
-      				      '<li><button id="viewButton" class="btn" value="' + inventory.code + '" '+
-                      			'data-toggle="modal" data-target="#viewModal" ><i class="icon fa fa-eye"></i> View</button></li>'+
-              			  '<li><button id="updateButton" class="btn" value="' + inventory.code + '" '+
-                      			'data-toggle="modal" data-target="#updateModal" ><i class="icon fa fa-edit"></i> Edit</button></li>'+ 
-                      	  '<li><button id="deleteButton" class="btn" value="' + inventory.code + '" >'+
-                      	  		'<i class="icon fa fa-trash"></i> Delete</button></li>'+ 
-      		    		'</ul>'+
-      		  		'</div>'
-              +'</td>' +
-            '</tr>'
-            ); 
+      $.ajax({
+          type        : "GET",
+          url         : "/inv_mgt/inventory/getAll",
+          contentType : "application/json",
+          dataType  	: "json",
+          success: function(response){
+            if (response.data == null) {
+                $("#main_table").append(
+                '<tr><td> No data on records.</td> </tr>'
+                ); 
+            }
+            else{
 
-        });
+                $.each(response.data, function (i, inventory) {   
+                  $("#main_table").append(
+                    '<tr>'
+                      +'<td>' + (i+1) + '</td>'
+                      +'<td>' + inventory.name + '</td>'
+                      +'<td>' + inventory.price + '</td>'
+                      +'<td><div id="stockForm"> <button class="btn" id="stockButton" value="' + inventory.code + '"><i class="icon fa fa-edit" ></i></button>&emsp;' + inventory.stock + ' </div></td>'
+                      +'<td>' + inventory.image + '</td>'
+                      +'<td class="col-md-1">' +  
+                        '<div class="dropdown">'+
+              		    		'<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="icon fa fa-wrench"></i> Tools</button>'+
+              		    		'<ul class="dropdown-menu dropdown-menu-right" id="dropdownTools">'+
+              				      '<li><button id="viewButton" class="btn" value="' + inventory.code + '" '+
+                              			'data-toggle="modal" data-target="#viewModal" ><i class="icon fa fa-eye"></i> View</button></li>'+
+                      			  '<li><button id="updateButton" class="btn" value="' + inventory.code + '" '+
+                              			'data-toggle="modal" data-target="#updateModal" ><i class="icon fa fa-edit"></i> Edit</button></li>'+ 
+                              	  '<li><button id="deleteButton" class="btn" value="' + inventory.code + '" >'+
+                              	  		'<i class="icon fa fa-trash"></i> Delete</button></li>'+ 
+              		    		'</ul>'+
+              		  		'</div>'
+                      +'</td>' +
+                    '</tr>'
+                    ); 
 
-      },
-      error: function(response){
-          alert(response);
-      }
-  });
+                });
+
+              }
+
+          },
+          error: function(response){
+              $("#alert").html('');
+              jQuery("#formModal").modal("hide");
+              showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+          }
+      });
+  }
+
+
 
   /* ================================================= VIEW DATA BY ID ===========================================================*/
-  $(document).on("click", "#search", function(){
-     var id = $(this).val();
-  	  $("#inventoryName").html('');
-      $("#inventoryDetail").html('');
-      $("#inventoryPrice").html('');
-      $("#inventoryStock").html('');
- 		alert('1');
+  $(document).on("click", "#viewButton", function(){
+      var id = $(this).val();
+
+      $("#viewImage, #inventoryName, #inventoryDetail, #inventoryPrice, #inventoryStock").html('');
+ 		 
       $.ajax({
-	    type 			: "GET",
-	    dataType 		: "json",
-	    url 			: "/inv_mgt/inventory/getById/" + id,
-	    success: function(response){
-	    	alert('s');
-	   		  
-          $("#inventoryCode").append('<b>'+response.data.code+'</b>');
-          $("#inventoryName").append(response.data.name);
-          $("#inventoryDetail").append(response.data.detail);
-          $("#inventoryPrice").append(response.data.price);
-          $("#inventoryStock").append(response.data.stock);
-	           
-	    },
-	    error: function(response){
-          if(response.data == null){
-          	alert(JSON.stringify(response) );
-          }
-          console.log(response );
-	    }
-      }); alert('1');
+    	    type 			: "GET",
+    	    dataType  : "json",
+    	    url 			: "/inv_mgt/inventory/getById/" + id,
+          success: function(response){
+              if(response.code == 200){
+
+                $("#viewImage").append(
+                    '<img src="'+response.data.image+'" style="width: 100%">'
+                );
+
+                $("#inventoryCode").append('<b>'+response.data.code+'</b>');
+                $("#inventoryName").append(response.data.name);
+                $("#inventoryDetail").append(response.data.detail);
+                $("#inventoryPrice").append(response.data.price);
+                $("#inventoryStock").append(response.data.stock);
+              }
+              else{
+                $("#alert").html('');
+                jQuery("#viewModal").modal("hide");
+                showAllert(response.code, response.code + ' ' + response.message + "!", "");  
+             } 
+          },
+          error: function(){
+              $("#alert").html('');
+              jQuery("#formModal").modal("hide");
+              showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+          } 
+      });  
   });
 
-   window.onerror = function (errorMsg, url, lineNumber) {
-    alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber);
-}   
+    
+
   /* ================================================= SEARCH NEW DATA ===========================================================*/
-  
-    // $(document).on("click", "#search", function(){
-    // 	alert(getTime());
-    // });
+  $("#searchForm").submit(function(event){
+      var name = $("#name").val(); 
+
+      event.preventDefault();
+
+      searchInventory(name);
+  });
+
+  $(document).on("click", "#clearSearch", function(){
+        $("#btnSearch").html(
+            '<button class="btn btn-default" type="submit" id="search">'+
+              '<i class="icon fa fa-search"></i>'+
+            '</button>'
+        );
+
+        $("#table-content").html('');
+        $("#name").val('');
+
+        viewAll();
+        event.preventDefault();
+   
+  });
+
+  function searchInventory(name){
+      $.ajax({
+        type         : "GET",
+        url          : "/inv_mgt/inventory/getByName/" + name,
+        contentType  : "application/json",
+        dataType     : "json",
+        success: function(response){
+          $("#table-content").html(''); 
+
+          $("#btnSearch").html(
+              '<button class="btn btn-default" type="submit" id="clearSearch">'+
+                '<i class="icon fa fa-times"></i>'+
+              '</button>'
+          );
+
+          if(response.code == 200){ 
+              $.each(response.data, function (i, inventory) {   
+                $("#main_table").append(
+                  '<tr>'
+                    +'<td>' + (i+1) + '</td>'
+                    +'<td>' + inventory.name + '</td>'
+                    +'<td>' + inventory.price + '</td>'
+                    +'<td><div id="stockForm"> <button class="btn" id="stockButton" value="' + inventory.code + '"><i class="icon fa fa-edit" ></i></button>&emsp;' + inventory.stock + ' </div></td>'
+                    +'<td>' + inventory.image + '</td>'
+                    +'<td class="col-md-1">' +  
+                      '<div class="dropdown">'+
+                        '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="icon fa fa-wrench"></i> Tools</button>'+
+                        '<ul class="dropdown-menu dropdown-menu-right" id="dropdownTools">'+
+                          '<li><button id="viewButton" class="btn" value="' + inventory.code + '" '+
+                                  'data-toggle="modal" data-target="#viewModal" ><i class="icon fa fa-eye"></i> View</button></li>'+
+                            '<li><button id="updateButton" class="btn" value="' + inventory.code + '" '+
+                                  'data-toggle="modal" data-target="#updateModal" ><i class="icon fa fa-edit"></i> Edit</button></li>'+ 
+                                '<li><button id="deleteButton" class="btn" value="' + inventory.code + '" >'+
+                                    '<i class="icon fa fa-trash"></i> Delete</button></li>'+ 
+                        '</ul>'+
+                      '</div>'
+                    +'</td>' +
+                  '</tr>'
+                  ); 
+
+              });
+          }
+          else{
+            $("#main_table").append('<tr><td> No data on records.</td> </tr>');
+          } 
+        },
+        error: function(){
+            $("#alert").html('');
+            jQuery("#formModal").modal("hide");
+            showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+        }
+
+      });
+  }
+
+     
+
 
   /* ================================================= ADD NEW DATA ===========================================================*/
-  // $(document).on("click", "#addButtonForm", function(event){
-  //    // event.preventDefault();
-  //     ajaxSubmitForm();
-  // });
-
   $("#addForm").submit(function(){
-       ajaxSubmitForm();
+       addNewData();
   });
   
-  function ajaxSubmitForm() {
- 
-    // Get form
+  function addNewData() { 
     var form = $('#addForm')[0]; 
     var f_data = new FormData(form);
     
     f_data.append("code", null);
-    //alert(f_data.get('image').getA);
+    f_data.append("image", null); 
 
     $.ajax({
         type: "POST",
@@ -111,37 +199,29 @@ $(document).ready(function(){
         url: "/inv_mgt/inventory/create",
         data: f_data,
         dataType:"json",
- 
-        // prevent jQuery from automatically transforming the data into a query string
         processData: false,
         contentType: false,
         cache: false,
         timeout: 5000,
         success: function(response){
-          console.log('1');
             $("#alert").html('');
             if(response.code == 200){
-              jQuery("#addModal").modal("hide");
+              jQuery("#formModal").modal("hide");
               showAllert(response.code, response.code + ' ' + response.message + "!", "Data has been added.");  
-              setTimeout(function(){ location.reload(); }, 1000);
-              console.log('2');
+              viewAll();
             } 
             else{
               $("#alert").html('');
-              jQuery("#addModal").modal("hide");
+              jQuery("#formModal").modal("hide");
               showAllert(response.code, response.code + ' ' + response.message + "!", "Something error.");  
-              console.log('3');
-           } 
-           console.log('4');
-           alert('ini');
+           }  
         },
         error: function(response){
-          console.log('5');
-            
+            $("#alert").html('');
+            jQuery("#formModal").modal("hide");
+            showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
         }
-    });
-
-    alert('wq45');
+    }); 
 
   }
 
@@ -190,7 +270,8 @@ $(document).ready(function(){
     );
   }
 
-  $(document).on("click", "#stockButton", function(){
+  $(document).on("click", "#stockButton", function(event){
+    event.preventDefault();
   	  //call form to update the stock
 	  ShowUpdateStockForm();
       
@@ -214,7 +295,8 @@ $(document).ready(function(){
      
   });
 
-  $(document).on("click", "#stockButtonForm", function(e){ 
+  $(document).on("click", "#stockButtonForm", function(event){
+  event.preventDefault(); 
 	  var id = $(this).val(); 
 
 	  var formData = {
@@ -227,28 +309,30 @@ $(document).ready(function(){
 	      data       	: JSON.stringify(formData),
 	      contentType   : "application/json",
 		    dataType  	: "json",
-	      success : function(response){ 
-	      },
-	      error : function(response){ 
-	      }
+	      success: function(response){
+            if(response.code == 200){
+              $("#alert").html(''); 
+              showAllert(response.code, response.code + ' ' + response.message + "!", "Stock updated.");  
+              viewAll();
+            } 
+            else{
+              $("#alert").html(''); 
+              showAllert(response.code, response.code + ' ' + response.message + "!", "");  
+            } 
+          },
+        error : function(response){
+            $("#alert").html('');
+            jQuery("#formModal").modal("hide");
+            showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+        } 
 	  });
      
   });
 
 
   /* ================================================= UPDATE DATA INVENTORY ===========================================================*/
-  function ConvertFormToJSON(form){
-    var array = jQuery(form).serializeArray();
-    var json = {};
-    
-    jQuery.each(array, function() {
-        json[this.name] = this.value || '';
-    });
-    
-    return json;
-  }
-
-  $(document).on("click", "#updateButton", function(){ 
+  $(document).on("click", "#updateButton", function(event){
+      event.preventDefault(); 
       
       var id = $(this).val();
       var form = document.getElementById('updateForm');  
@@ -267,53 +351,76 @@ $(document).ready(function(){
 	  );
 
 	  var dataJson = JSON.parse(JSON.stringify(data.data), function (key, value) { 
- 		var formInput = $('[name='+ key +']', form);  
- 		formInput.val(value);   
-      });
+     		var formInput = $('[name='+ key +']', form);  
+     		formInput.val(value);   
+    });
 	
   });
 
 
-  $(document).on("click", "#updateButtonForm", function(){ 
+  $(document).on("click", "#updateButtonForm", function(event){
+    event.preventDefault();
+
 	  var id = $(this).val();  
 	  var form = document.getElementById('updateForm'); 
-	  var dataForm = ConvertFormToJSON(form);
-
-	  alert(dataForm);
-	  alert(JSON.stringify(dataForm));
-
+	  var dataForm = ConvertFormToJSON(form); 
 
 	  $.ajax({
 	      type       	: "PUT",
 	      url     		: "/inv_mgt/inventory/updateById/" + id,
 	      data       	: JSON.stringify(dataForm),
 	      contentType   : "application/json",
-		  dataType  	: "json",
-	      success : function(response){ 
-	      },
-	      error : function(response){ 
-	      }
+		    dataType  	: "json",
+	      success: function(response){
+            if(response.code == 200){
+              $("#alert").html(''); 
+              jQuery("#updateModal").modal("hide");
+              showAllert(response.code, response.code + ' ' + response.message + "!", "Inventory data updated.");  
+              viewAll();
+            } 
+            else{
+              $("#alert").html(''); 
+              jQuery("#updateModal").modal("hide");
+              showAllert(response.code, response.code + ' ' + response.message + "!", "");  
+            } 
+          },
+        error : function(response){
+            $("#alert").html('');
+            jQuery("#updateModal").modal("hide");
+            showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+        } 
 	  }).responseText;
      
   });
 
 
   /* ================================================= DELETE DATA ===========================================================*/
-  $(document).on("click", "#deleteButton", function(){
+  $(document).on("click", "#deleteButton", function(event){
+      event.preventDefault();
+
       var id = $(this).val(); 
   
       $.ajax({
           type      	: "DELETE",
           url       	: "/inv_mgt/inventory/deleteById/" + id,
-          contentType   : "application/json",
-	  	  dataType  	: "json",
-          success : function(response){ 
-              showAlert('success');
-              location.reload(true);
+          contentType : "application/json",
+	  	    dataType  	: "json",
+          success: function(response){
+            if(response.code == 200){
+              $("#alert").html(''); 
+              showAllert(response.code, response.code + ' ' + response.message + "!", "Record deleted.");  
+              viewAll();
+            } 
+            else{
+              $("#alert").html(''); 
+              showAllert(response.code, response.code + ' ' + response.message + "!", "");  
+            } 
           },
           error : function(response){
-              showAlert('failed');
-          }
+              $("#alert").html('');
+              jQuery("#formModal").modal("hide");
+              showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+          } 
       });
   });
 

@@ -2,9 +2,11 @@ package del.be_inv_mgt.service.impl;
 
 import del.be_inv_mgt.exception.ResourceNotFoundException;
 import del.be_inv_mgt.model.FormRequest;
+import del.be_inv_mgt.model.Inventory;
 import del.be_inv_mgt.model.respon.ErrorCode;
 import del.be_inv_mgt.model.respon.Status;
 import del.be_inv_mgt.repository.FormRequestRepository;
+import del.be_inv_mgt.repository.InventoryRepository;
 import del.be_inv_mgt.service.FormRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ import java.util.List;
 public class FormRequestServiceImpl implements FormRequestService {
     @Autowired
     private FormRequestRepository formRequestRepository;
+
+    @Autowired
+    private InventoryRepository inventoryRepository;
 
     public List<FormRequest> getAllRequest(){
         List<FormRequest> formRequests = formRequestRepository.findAll();
@@ -68,14 +73,21 @@ public class FormRequestServiceImpl implements FormRequestService {
         return formRequests;
     }
 
-    public FormRequest createRequest(FormRequest requestNew, String employeeID){
+    public FormRequest createRequest(FormRequest requestNew){
+        Inventory inventory = inventoryRepository.findByCode(requestNew.getInventoryID());
+
+        if(inventory == null){
+            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        inventory.setStock(inventory.getStock() - requestNew.getQtyRequest());
 
         requestNew.setRequestID("req_"+getDate("yyyyMMddHHmmss"));
-        requestNew.setEmployeeID(employeeID);
         requestNew.setDateRequest(getDate("yyyy/MM/dd HH:mm:ss"));
         requestNew.setDateReceived("0000/00/00 00:00:00");
-
         requestNew.setStatus(Status.Pending.toString());
+
+        inventoryRepository.save(inventory);
 
         return formRequestRepository.save(requestNew);
     }
@@ -117,6 +129,28 @@ public class FormRequestServiceImpl implements FormRequestService {
         return formRequests;
     }
 
+    public FormRequest canceledRequestById(String requestID) {
+        FormRequest formRequests = formRequestRepository.findByRequestID(requestID);
+
+        if (formRequests == null){
+            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        if(!formRequests.getStatus().equals(Status.Pending.toString())){
+            throw new ResourceNotFoundException(ErrorCode.BAD_REQUEST.getCode(), ErrorCode.BAD_REQUEST.getMessage());
+        }
+
+        Inventory inventory = inventoryRepository.findByCode(formRequests.getInventoryID());
+        inventory.setStock(inventory.getStock() + formRequests.getQtyRequest());
+
+        formRequests.setStatus(Status.Canceled.toString());
+
+        inventoryRepository.save(inventory);
+        formRequestRepository.save(formRequests);
+
+        return formRequests;
+    }
+
     public FormRequest rejectRequestById(String requestID) {
         FormRequest formRequests = formRequestRepository.findByRequestID(requestID);
 
@@ -128,7 +162,12 @@ public class FormRequestServiceImpl implements FormRequestService {
             throw new ResourceNotFoundException(ErrorCode.BAD_REQUEST.getCode(), ErrorCode.BAD_REQUEST.getMessage());
         }
 
+        Inventory inventory = inventoryRepository.findByCode(formRequests.getInventoryID());
+        inventory.setStock(inventory.getStock() + formRequests.getQtyRequest());
+
         formRequests.setStatus(Status.Rejected.toString());
+
+        inventoryRepository.save(inventory);
         formRequestRepository.save(formRequests);
 
         return formRequests;

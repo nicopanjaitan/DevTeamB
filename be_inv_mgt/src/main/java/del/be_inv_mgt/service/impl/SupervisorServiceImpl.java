@@ -37,6 +37,14 @@ public class SupervisorServiceImpl implements SupervisorService {
         return supervisor;
     }
 
+    public List<Supervisor> getAllSupervisorByName(String name){
+        if(!supervisorRepository.existsByNameContaining(name)){
+            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        return supervisorRepository.findAllByNameContaining(name);
+    }
+
     public Supervisor createSupervisor(Supervisor supervisorNew){
         Supervisor supervisor = supervisorRepository.findByEmail(supervisorNew.getEmail());
 

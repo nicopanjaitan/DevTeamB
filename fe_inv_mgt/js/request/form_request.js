@@ -2,10 +2,6 @@
 $(document).ready(function(){
   $('.js-example-basic-single').select2(); 
 
-  $.get("/template/sidebar.html", function (data) {
-      $("aside").append(data);
-  });  
-
   function ConvertFormToJSON(form){
     var array = jQuery(form).serializeArray();
     var json = {};
@@ -17,78 +13,249 @@ $(document).ready(function(){
     return json;
   }
  
+
+  /* ============================================= ADDITION ====================================================*/
+  function getRoles(){ 
+    return document.cookie.split('roles=')[1].split(';')[0];
+  } 
+
+  function getUserID(){ 
+    return document.cookie.split('userID=')[1].split(';')[0];
+  }
+
+
+
   /* ============================================= VIEW ALL DATA =====================================================*/
+  viewAll();
+
+  alert(document.cookie);
+
+  function viewAll(){
+     if(getRoles() == "employee"){
+        viewByEmployee();
+     }
+     else if(getRoles() == "supervisor"){
+        viewBySupervisor();
+     }
+     else if(getRoles() == "admin"){
+        viewByAdmin();
+     }
+  }
+
+  function viewByEmployee(){
+      $("#table-content").html('');
+      var employeeID = getUserID();
+
+      $.ajax({
+          type          : "GET",
+          url           : "/inv_mgt/request/getByEmployeeId/" + employeeID,
+          contentType   : "application/json",
+          dataType      : "json",
+          success: function(response){
+
+            if (response.code != 200) {
+              $("#main_table").append(
+                '<tr><td> No data on records.</td> </tr>'
+                ); 
+            }
+            else{
+
+              $.each(response.data, function (i, request) {   
+                $("#main_table").append(
+                  '<tr>'
+                    +'<td>' + (i+1) + '</td>'
+                    +'<td>' + request.employeeID + '</td>'
+                    +'<td>' + request.supervisorID + '</td>'
+                    +'<td>' + request.inventoryID + '</td>'
+                    +'<td>' + request.qtyRequest + '</td>'
+                    +'<td>' + request.destination + '</td>'
+                    +'<td>' + request.dateRequest + '</td>'
+                    +'<td>' + request.dateReceived + '</td>'
+                    +'<td>' + request.status + '</td>'
+                    +'<td class="col-md-1">' +  
+                      '<div class="dropdown">'+
+                        '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="icon fa fa-wrench"></i> Tools</button>'+
+                        '<ul class="dropdown-menu dropdown-menu-right" id="dropdownTools">'+
+                            '<li id="viewB"><button id="viewButton" class="btn" value="' + request.requestID + '" '+
+                                  'data-toggle="modal" data-target="#viewModal" ><i class="icon fa fa-eye"></i> View</button></li>'+
+                            '<li id="updateB"><button id="updateButton" class="btn" value="' + request.requestID + '" '+
+                                  'data-toggle="modal" data-target="#updateModal" ><i class="icon fa fa-edit"></i> Edit</button></li>'+ 
+                            '<li id="deleteB"><button id="deleteButton" class="btn" value="' + request.requestID + '" >'+
+                                    '<i class="icon fa fa-trash"></i> Delete</button></li>'+ 
+                        '</ul>'+
+                      '</div>'
+                    +'</td>' +
+                  '</tr>'
+                );  
+
+                if(request.employeeID  != getUserID()){ 
+                   $("#updateB, #deleteB").html('');
+                }
+
+              });
+
+              
+
+            }
+
+          },
+          error: function(response){
+              alert('Something error');
+          }
+      });
+  }
+
+  function viewBySupervisor(){
+      $("#table-content").html('');
+      var supervisorID = getUserID();
+
+      $.ajax({
+          type          : "GET",
+          url           : "/inv_mgt/request/getBySupervisorId/" + supervisorID,
+          contentType   : "application/json",
+          dataType      : "json",
+          success: function(response){
+
+            if (response.code != 200) {
+              $("#main_table").append(
+                '<tr><td> No data on records.</td> </tr>'
+                ); 
+            }
+            else{
+
+              $.each(response.data, function (i, request) {   
+                $("#main_table").append(
+                  '<tr>'
+                    +'<td>' + (i+1) + '</td>'
+                    +'<td>' + request.employeeID + '</td>'
+                    +'<td>' + request.supervisorID + '</td>'
+                    +'<td>' + request.inventoryID + '</td>'
+                    +'<td>' + request.qtyRequest + '</td>'
+                    +'<td>' + request.destination + '</td>'
+                    +'<td>' + request.dateRequest + '</td>'
+                    +'<td>' + request.dateReceived + '</td>'
+                    +'<td>' + request.status + '</td>'
+                    +'<td class="col-md-1">' +  
+                      '<div class="dropdown">'+
+                        '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="icon fa fa-wrench"></i> Tools</button>'+
+                        '<ul class="dropdown-menu dropdown-menu-right" id="dropdownTools">'+
+                            '<li id="viewB"><button id="viewButton" class="btn" value="' + request.requestID + '" '+
+                                  'data-toggle="modal" data-target="#viewModal" ><i class="icon fa fa-eye"></i> View</button></li>'+
+                            '<li id="updateB"><button id="updateButton" class="btn" value="' + request.requestID + '" '+
+                                  'data-toggle="modal" data-target="#updateModal" ><i class="icon fa fa-edit"></i> Edit</button></li>'+ 
+                            '<li id="deleteB"><button id="deleteButton" class="btn" value="' + request.requestID + '" >'+
+                                    '<i class="icon fa fa-trash"></i> Delete</button></li>'+ 
+                        '</ul>'+
+                      '</div>'
+                    +'</td>' +
+                  '</tr>'
+                );  
+
+                if(request.employeeID  != getUserID()){ 
+                   $("#updateB, #deleteB").html('');
+                }
+
+              });
+
+              
+
+            }
+
+          },
+          error: function(response){
+              alert('Something error');
+          }
+      });
+  }
+
+
+  function viewByAdmin(){
+      $("#table-content").html('');
+
+      $.ajax({
+          type          : "GET",
+          url           : "/inv_mgt/request/getAll",
+          contentType   : "application/json",
+          dataType      : "json",
+          success: function(response){
+
+            if (response.code != 200) {
+              $("#main_table").append(
+                '<tr><td> No data on records.</td> </tr>'
+                ); 
+            }
+            else{
+
+              $.each(response.data, function (i, request) {   
+                $("#main_table").append(
+                  '<tr>'
+                    +'<td>' + (i+1) + '</td>'
+                    +'<td>' + request.employeeID + '</td>'
+                    +'<td>' + request.supervisorID + '</td>'
+                    +'<td>' + request.inventoryID + '</td>'
+                    +'<td>' + request.qtyRequest + '</td>'
+                    +'<td>' + request.destination + '</td>'
+                    +'<td>' + request.dateRequest + '</td>'
+                    +'<td>' + request.dateReceived + '</td>'
+                    +'<td>' + request.status + '</td>'
+                    +'<td class="col-md-1">' +  
+                      '<div class="dropdown">'+
+            		    		'<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="icon fa fa-wrench"></i> Tools</button>'+
+            		    		'<ul class="dropdown-menu dropdown-menu-right" id="dropdownTools">'+
+            				        '<li id="viewB"><button id="viewButton" class="btn" value="' + request.requestID + '" '+
+                            			'data-toggle="modal" data-target="#viewModal" ><i class="icon fa fa-eye"></i> View</button></li>'+
+                    			  '<li id="updateB"><button id="updateButton" class="btn" value="' + request.requestID + '" '+
+                            			'data-toggle="modal" data-target="#updateModal" ><i class="icon fa fa-edit"></i> Edit</button></li>'+ 
+                        	  '<li id="deleteB"><button id="deleteButton" class="btn" value="' + request.requestID + '" >'+
+                            	  		'<i class="icon fa fa-trash"></i> Delete</button></li>'+ 
+            		    		'</ul>'+
+            		  		'</div>'
+                    +'</td>' +
+                  '</tr>'
+                );  
+
+                if(request.employeeID  != getUserID()){ 
+                   $("#updateB, #deleteB").html('');
+                }
+
+              });
+
+              
+
+            }
+
+          },
+          error: function(response){
+              alert('Something error');
+          }
+      });
+  }
+
  
-  $.ajax({
-      type          : "GET",
-      url           : "/inv_mgt/request/getAll",
-      contentType   : "application/json",
-      dataType      : "json",
-      success: function(response){
-
-        if (response.data == null) {
-          $("#main_table").append(
-            '<tr><td> No data on records.</td> </tr>'
-            ); 
-        }
-        else{
-
-          $.each(response.data, function (i, request) {   
-            $("#main_table").append(
-              '<tr>'
-                +'<td>' + (i+1) + '</td>'
-                +'<td>' + request.employeeID + '</td>'
-                +'<td>' + request.supervisorID + '</td>'
-                +'<td>' + request.inventoryID + '</td>'
-                +'<td>' + request.qtyRequest + '</td>'
-                +'<td>' + request.destination + '</td>'
-                +'<td>' + request.dateRequest + '</td>'
-                +'<td>' + request.dateReceived + '</td>'
-                +'<td>' + request.status + '</td>'
-                +'<td class="col-md-1">' +  
-                  '<div class="dropdown">'+
-        		    		'<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="icon fa fa-wrench"></i> Tools</button>'+
-        		    		'<ul class="dropdown-menu dropdown-menu-right" id="dropdownTools">'+
-        				      '<li><button id="viewButton" class="btn" value="' + request.requestID + '" '+
-                        			'data-toggle="modal" data-target="#viewModal" ><i class="icon fa fa-eye"></i> View</button></li>'+
-                			  '<li><button id="updateButton" class="btn" value="' + request.requestID + '" '+
-                        			'data-toggle="modal" data-target="#updateModal" ><i class="icon fa fa-edit"></i> Edit</button></li>'+ 
-                        	  '<li><button id="deleteButton" class="btn" value="' + request.requestID + '" >'+
-                        	  		'<i class="icon fa fa-trash"></i> Delete</button></li>'+ 
-        		    		'</ul>'+
-        		  		'</div>'
-                +'</td>' +
-              '</tr>'
-              );  
-          });
-
-        }
-
-      },
-      error: function(response){
-          alert('Something error');
-      }
-  });
 
   /* ============================================= VIEW DATA BY ID ====================================================*/
+  
   $(document).on("click", "#viewButton", function(){
-      var id = $(this).val();
+      var requestID = $(this).val();
   	  $("#r_id, #r_employee, #e_supervisor, #e_inventory, #e_qty, #e_destination, #e_request, #e_received, #e_status").html(''); 
 
       $.ajax({
   	    type          : "GET",
-        url           : "/inv_mgt/request/getById/" + id,
+        url           : "/inv_mgt/request/getById/" + requestID,
         contentType   : "application/json",
   	    dataType      : "json",
   	    success: function(response){
 
-          if (response.data == null) {
-            alert('Data not found'); 
-          }
+          if (response.code != 200) {
+              $("#alert").html('');
+              jQuery("#viewModal").modal("hide");
+              showAllert(response.code, response.code + ' ' + response.message + "!", "");  
+          } 
           else{
-            $("#approved").val(id);
-            $("#handovered").val(id);     
-            $("#rejected").val(id);     
+            $("#approved").val(requestID);
+            $("#handovered").val(requestID); 
+            $("#canceled").val(requestID);     
+            $("#rejected").val(requestID);     
 
             $("#r_id").append('<b>'+response.data.requestID+'</b>');
             $("#r_employee").append(response.data.employeeID);
@@ -99,96 +266,181 @@ $(document).ready(function(){
             $("#e_request").append(response.data.dateRequest);
             $("#e_received").append(response.data.dateReceived);
             $("#e_status").append(response.data.status);
+
+            if(response.data.status == "Pending"){
+                $("#handovered").hide();
+
+                if(getRoles() == "employee"){
+                    $("#approved, #rejected, #handovered").hide(); 
+                    $("#canceled").show();//only cancel button                   
+                }
+                else if(getRoles() == "supervisor"){
+                    $("#canceled, #handovered").hide(); 
+                    $("#approved, #rejected").show();//can approved nd rejected                 
+                }
+            }
+            else if(response.data.status == "Approved"){
+                if(getRoles() == "employee"){
+                    $("#approved, #canceled, #rejected, #handovered").hide();  //nothing                  
+                }
+                else if(getRoles() == "supervisor"){
+                    $("#approved, #canceled, #rejected").hide(); 
+                    $("#handovered").show();//only handover                   
+                }
+            }
+            else if(response.data.status == "Rejected" || response.data.status == "Received"){
+                $("#approved, #handovered, #canceled, #rejected").hide();
+            }
           }
   	           
   	    },
   	    error: function(url){
-           alert('Something Error');
-  	    }
+            $("#alert").html('');
+            jQuery("#viewModal").modal("hide");
+            showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+        } 
       });
   });
 
+
+
   /* ============================================= APPROVED DATA ====================================================*/
-  $(document).on("click", "#approved", function(){ 
-    var id = $(this).val();    
+  $(document).on("click", "#approved", function(event){
+    event.preventDefault(); 
+    var requestID = $(this).val();    
    
     $.ajax({
         type        : "PUT",
-        url         : "/inv_mgt/request/approvedById/" + id,
+        url         : "/inv_mgt/request/approvedById/" + requestID,
         contentType : "application/json",
         dataType    : "json",
-        success : function(response){ 
-          $('#viewModal').modal('hide');
-
-          if (response.code != 200) {
-            showAllert(response.code, "Bad Request!", "The previous status is not appropriate.");
-            location.reload();
-          }
+        success: function(response){
+          if(response.code == 200){
+            $("#alert").html(''); 
+            jQuery("#viewModal").modal("hide");
+            showAllert(response.code, response.code + ' ' + response.message + "!", "Request has been approved.");  
+            viewAll();
+          } 
           else{
-            showAllert(response.code, "Success!", "Form request has been approved.");
-          }
+            $("#alert").html(''); 
+            jQuery("#viewModal").modal("hide");
+            showAllert(response.code, response.code + ' ' + response.message + "!", "");  
+          } 
         },
-        error : function(response){ 
-          alert('Something Error');
-        }
+        error : function(response){
+            $("#alert").html('');
+            jQuery("#viewModal").modal("hide");
+            showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+        } 
     }).responseText;
      
   });
 
-  /* ============================================= REJECTED DATA ====================================================*/
-  $(document).on("click", "#rejected", function(){ 
-    var id = $(this).val();    
+  /* ============================================= CANCELED DATA ====================================================*/
+  $(document).on("click", "#canceled", function(event){
+    event.preventDefault(); 
+    var requestID = $(this).val();    
    
     $.ajax({
         type        : "PUT",
-        url         : "/inv_mgt/request/rejectById/" + id,
+        url         : "/inv_mgt/request/canceledById/" + requestID,
         contentType : "application/json",
         dataType    : "json",
-        success : function(response){ 
-          if (response.code != 200) {
-            alert('Request Error'); 
-          }
+        success: function(response){
+          if(response.code == 200){
+            $("#alert").html(''); 
+            jQuery("#viewModal").modal("hide");
+            showAllert(response.code, response.code + ' ' + response.message + "!", "Request has been canceled.");  
+            viewAll();
+          } 
           else{
-            alert('Rejected');
-            location.reload();
-          }
+            $("#alert").html(''); 
+            jQuery("#viewModal").modal("hide");
+            showAllert(response.code, response.code + ' ' + response.message + "!", "");  
+          } 
         },
-        error : function(response){ 
-          alert('Something Error');
-        }
-    }).responseText;
-     
-  });
-
-  /* ============================================= HANDOVERED DATA ====================================================*/
-  $(document).on("click", "#handovered", function(){ 
-    var id = $(this).val();    
-   
-    $.ajax({
-        type        : "PUT",
-        url         : "/inv_mgt/request/handoverById/" + id,
-        contentType : "application/json",
-        dataType    : "json",
-        success : function(response){ 
-          if (response.code != 200) {
-            alert('Request Error'); 
-          }
-          else{
-            alert('Handovered');
-            location.reload();
-          }
-        },
-        error : function(response){ 
-          alert('Something Error');
-        }
+        error : function(response){
+            $("#alert").html('');
+            jQuery("#viewModal").modal("hide");
+            showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+        } 
     }).responseText;
      
   }); 
    
+
+  /* ============================================= REJECTED DATA ====================================================*/
+  $(document).on("click", "#rejected", function(event){ 
+    event.preventDefault(); 
+    var requestID = $(this).val();    
+   
+    $.ajax({
+        type        : "PUT",
+        url         : "/inv_mgt/request/rejectById/" + requestID,
+        contentType : "application/json",
+        dataType    : "json",
+        success: function(response){
+          if(response.code == 200){
+            $("#alert").html(''); 
+            jQuery("#viewModal").modal("hide");
+            showAllert(response.code, response.code + ' ' + response.message + "!", "Request has been rejected.");  
+            viewAll();
+          } 
+          else{
+            $("#alert").html(''); 
+            jQuery("#viewModal").modal("hide");
+            showAllert(response.code, response.code + ' ' + response.message + "!", "");  
+          } 
+        },
+        error : function(response){
+            $("#alert").html('');
+            jQuery("#viewModal").modal("hide");
+            showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+        } 
+    }).responseText;
+     
+  });
+
+
+  /* ============================================= HANDOVERED DATA ====================================================*/
+  $(document).on("click", "#handovered", function(event){
+    event.preventDefault(); 
+    var requestID = $(this).val();    
+   
+    $.ajax({
+        type        : "PUT",
+        url         : "/inv_mgt/request/handoverById/" + requestID,
+        contentType : "application/json",
+        dataType    : "json",
+        success: function(response){
+          if(response.code == 200){
+            $("#alert").html(''); 
+            jQuery("#viewModal").modal("hide");
+            showAllert(response.code, response.code + ' ' + response.message + "!", "Request has been handovered.");  
+            viewAll();
+          } 
+          else{
+            $("#alert").html(''); 
+            jQuery("#viewModal").modal("hide");
+            showAllert(response.code, response.code + ' ' + response.message + "!", "");  
+          } 
+        },
+        error : function(response){
+            $("#alert").html('');
+            jQuery("#viewModal").modal("hide");
+            showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+        } 
+    }).responseText;
+     
+  }); 
+
+
+
+   
   /* ================================================= ADD NEW DATA ===========================================================*/
   $(document).on("click", "#addButton", function(){
     //hanya utk percobaan, pakai id langsung
-    var employeeID = "emp_20181226084033";
+    var employeeID = getUserID();
     var form = document.getElementById('addForm'); 
 
     //set some data to form
@@ -241,6 +493,7 @@ $(document).ready(function(){
       $("#supervisorID").val(data['supervisorID']);
  
   }
+
 
 
   /* ================================================= UPDATE DATA ===========================================================*/ 
@@ -303,23 +556,114 @@ $(document).ready(function(){
 
 
   /* ================================================= DELETE DATA ===========================================================*/
-  $(document).on("click", "#deleteButton", function(){
-      var id = $(this).val();  
+  $(document).on("click", "#deleteButton", function(event){
+      event.preventDefault();
+      var requestID = $(this).val();  
   
       $.ajax({
           type          : "DELETE",
-          url           : "/inv_mgt/request/deleteById/" + id,
+          url           : "/inv_mgt/request/deleteById/" + requestID,
           contentType   : "application/json",
 	  	    dataType      : "json",
-          success : function(response){  
-            alert('Deleted');
-            location.reload();
+          success: function(response){
+            if(response.code == 200){
+              $("#alert").html(''); 
+              showAllert(response.code, response.code + ' ' + response.message + "!", "Record deleted.");  
+              viewAll();
+            } 
+            else{
+              $("#alert").html(''); 
+              showAllert(response.code, response.code + ' ' + response.message + "!", "");  
+            } 
           },
-          error : function(response){ 
-            alert('Something error');
-          }
+          error : function(response){
+              $("#alert").html('');
+              jQuery("#formModal").modal("hide");
+              showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+          } 
       });
   });
+
+
+  /* ================================================= SEARCH NEW DATA ===========================================================*/
+  $("#searchForm").submit(function(event){
+      var name = $("#name").val(); 
+
+      event.preventDefault();
+
+      searchInventory(name);
+  });
+
+  $(document).on("click", "#clearSearch", function(){
+        $("#btnSearch").html(
+            '<button class="btn btn-default" type="submit" id="search">'+
+              '<i class="icon fa fa-search"></i>'+
+            '</button>'
+        );
+
+        $("#table-content").html('');
+        $("#name").val('');
+
+        viewAll();
+        event.preventDefault();
+   
+  });
+
+  function searchInventory(name){
+      $.ajax({
+        type         : "GET",
+        url          : "/inv_mgt/request/getByName/" + name,
+        contentType  : "application/json",
+        dataType     : "json",
+        success: function(response){
+          $("#table-content").html(''); 
+
+          $("#btnSearch").html(
+              '<button class="btn btn-default" type="submit" id="clearSearch">'+
+                '<i class="icon fa fa-times"></i>'+
+              '</button>'
+          );
+
+          if(response.code == 200){ 
+              $.each(response.data, function (i, inventory) {   
+                $("#main_table").append(
+                  '<tr>'
+                    +'<td>' + (i+1) + '</td>'
+                    +'<td>' + inventory.name + '</td>'
+                    +'<td>' + inventory.price + '</td>'
+                    +'<td><div id="stockForm"> <button class="btn" id="stockButton" value="' + inventory.code + '"><i class="icon fa fa-edit" ></i></button>&emsp;' + inventory.stock + ' </div></td>'
+                    +'<td>' + inventory.image + '</td>'
+                    +'<td class="col-md-1">' +  
+                      '<div class="dropdown">'+
+                        '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="icon fa fa-wrench"></i> Tools</button>'+
+                        '<ul class="dropdown-menu dropdown-menu-right" id="dropdownTools">'+
+                          '<li><button id="viewButton" class="btn" value="' + inventory.code + '" '+
+                                  'data-toggle="modal" data-target="#viewModal" ><i class="icon fa fa-eye"></i> View</button></li>'+
+                            '<li><button id="updateButton" class="btn" value="' + inventory.code + '" '+
+                                  'data-toggle="modal" data-target="#updateModal" ><i class="icon fa fa-edit"></i> Edit</button></li>'+ 
+                                '<li><button id="deleteButton" class="btn" value="' + inventory.code + '" >'+
+                                    '<i class="icon fa fa-trash"></i> Delete</button></li>'+ 
+                        '</ul>'+
+                      '</div>'
+                    +'</td>' +
+                  '</tr>'
+                  ); 
+
+              });
+          }
+          else{
+            $("#main_table").append('<tr><td> No data on records.</td> </tr>');
+          } 
+        },
+        error: function(){
+            $("#alert").html('');
+            jQuery("#formModal").modal("hide");
+            showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+        }
+
+      });
+  }
+
 
 
   function showAllert(code, message, description){

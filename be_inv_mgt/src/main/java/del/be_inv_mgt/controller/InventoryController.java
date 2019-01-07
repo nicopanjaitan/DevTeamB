@@ -33,12 +33,12 @@ public class InventoryController extends GlobalController {
     }
 
     @GetMapping("/getByName/{name}")
-    public Response<Inventory> getByName(@PathVariable String name){
+    public Response<List<Inventory>> getByName(@PathVariable String name){
         return toResponse(inventoryService.getInventoryByName(name));
     }
 
     @PostMapping("/create")
-    public Response<Inventory> create(@Valid @ModelAttribute Inventory inventory, @RequestParam MultipartFile file){
+    public Response<Inventory> create(@Valid @ModelAttribute Inventory inventory, @RequestParam(value = "imageFile") MultipartFile file){
         String images = null;
         System.out.println(inventory + "\n" + file);
         try{
@@ -49,12 +49,12 @@ public class InventoryController extends GlobalController {
         return toResponse(inventoryService.createInventory(inventory, images));
     }
 
-    @PutMapping(value = "/updateById/{code}")
+    @PutMapping("/updateById/{code}")
     public Response<Inventory> updateById(@PathVariable String code, @RequestBody Inventory inventory) {
         return toResponse(inventoryService.updateInventoryByCode(code, inventory));
     }
 
-    @PutMapping(value = "/updateStockById/{code}")
+    @PutMapping("/updateStockById/{code}")
     public Response<Inventory> updateStockById(@PathVariable String code, @RequestBody Inventory inventory){
         return toResponse(inventoryService.updateInventoryStockByCode(code, inventory.getStock()));
     }

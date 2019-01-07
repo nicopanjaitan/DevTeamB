@@ -26,12 +26,17 @@ public class SupervisorController extends GlobalController {
         return toResponse(supervisorService.getSupervisorById(supervisorID));
     }
 
+    @GetMapping("/getByName/{name}")
+    public Response<List<Supervisor>> getByName(@PathVariable String name){
+        return toResponse(supervisorService.getAllSupervisorByName(name));
+    }
+
     @PostMapping("/create")
     public Response<Supervisor> create(@Valid @RequestBody Supervisor supervisor){
         return toResponse(supervisorService.createSupervisor(supervisor));
     }
 
-    @PutMapping(value = "/updateById/{supervisorID}")
+    @PutMapping("/updateById/{supervisorID}")
     public Response<Supervisor> updateById(@PathVariable String supervisorID, @Valid @RequestBody Supervisor supervisor) {
         return toResponse(supervisorService.updateSupervisorById(supervisorID, supervisor));
     }

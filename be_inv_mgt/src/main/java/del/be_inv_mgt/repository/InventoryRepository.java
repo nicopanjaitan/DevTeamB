@@ -10,7 +10,9 @@ public interface InventoryRepository extends MongoRepository<Inventory, String> 
 
     Inventory findByName(String name);
 
-    List<Inventory> findAllByName(String name);
+    List<Inventory> findAllByNameContaining(String name);
+
+    boolean existsByNameContaining(String name);
 
     void deleteByCode(String code);
 }

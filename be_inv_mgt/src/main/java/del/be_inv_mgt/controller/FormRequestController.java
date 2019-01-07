@@ -41,9 +41,9 @@ public class FormRequestController extends GlobalController {
         return toResponse(formRequestService.getRequestByStatus(status));
     }
 
-    @PostMapping("/create/{employeeID}")
-    public Response<FormRequest> create(@PathVariable String employeeID, @Valid @RequestBody FormRequest formRequest){
-        return toResponse(formRequestService.createRequest(formRequest, employeeID));
+    @PostMapping("/create")
+    public Response<FormRequest> create(@Valid @RequestBody FormRequest formRequest){
+        return toResponse(formRequestService.createRequest(formRequest));
     }
 
     @PutMapping(value = "/updateById/{requestID}")
@@ -54,6 +54,11 @@ public class FormRequestController extends GlobalController {
     @PutMapping(value = "/approvedById/{requestID}")
     public Response<FormRequest> approvedById(@PathVariable String requestID) {
         return toResponse(formRequestService.approvedRequestById(requestID));
+    }
+
+    @PutMapping(value = "/canceledById/{requestID}")
+    public Response<FormRequest> canceledById(@PathVariable String requestID) {
+        return toResponse(formRequestService.canceledRequestById(requestID));
     }
 
     @PutMapping(value = "/rejectById/{requestID}")

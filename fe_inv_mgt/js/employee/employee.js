@@ -7,50 +7,56 @@ $(document).ready(function(){
   });   
   
   /* ================================================= VIEW ALL DATA ===========================================================*/
-  $.ajax({
-      type         : "GET",
-      url          : "/inv_mgt/employee/getAll",
-      contentType  : "application/json",
-      dataType     : "json",
-      success: function(response){
-        if (response.data == null) {
-            $("#main_table").append(
-            '<tr><td> No data on records.</td> </tr>'
-            ); 
-        }
-        else{
-            $.each(response.data, function (i, value) {   
-              $("#main_table").append(
-                '<tr>'
-                  +'<td>' + (i+1) + '</td>'
-                  +'<td>' + value.name + '</td>'
-                  +'<td>' + value.email + '</td>'
-                  +'<td>' + value.address + '</td>'
-                  +'<td>' + value.supervisorID + '</td>'
-                  +'<td class="col-md-1">' +  
-                    '<div class="dropdown">'+
-          		    		'<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="icon fa fa-wrench"></i> Tools</button>'+
-          		    		'<ul class="dropdown-menu dropdown-menu-right" id="dropdownTools">'+
-          				      '<li><button id="viewButton" class="btn" value="' + value.employeeID + '" '+
-                          			'data-toggle="modal" data-target="#viewModal" ><i class="icon fa fa-eye"></i> View</button></li>'+
-                  			  '<li><button id="updateButton" class="btn" value="' + value.employeeID + '" '+
-                          			'data-toggle="modal" data-target="#updateModal" ><i class="icon fa fa-edit"></i> Edit</button></li>'+ 
-                          	  '<li><button id="deleteButton" class="btn" value="' + value.employeeID + '" >'+
-                          	  		'<i class="icon fa fa-trash"></i> Delete</button></li>'+ 
-          		    		'</ul>'+
-          		  		'</div>'
-                  +'</td>' +
-                '</tr>'
-                );  
-            });
-        } 
-      },
-      error: function(){
-          $("#alert").html('');
-          jQuery("#formModal").modal("hide");
-          showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
-      }
-  });
+  viewAll();
+
+  function viewAll(){
+      $("#table-content").html('');
+
+      $.ajax({
+          type         : "GET",
+          url          : "/inv_mgt/employee/getAll",
+          contentType  : "application/json",
+          dataType     : "json",
+          success: function(response){
+            if (response.data == null) {
+                $("#main_table").append(
+                '<tr><td> No data on records.</td> </tr>'
+                ); 
+            }
+            else{
+                $.each(response.data, function (i, value) {   
+                  $("#main_table").append(
+                    '<tr>'
+                      +'<td>' + (i+1) + '</td>'
+                      +'<td>' + value.name + '</td>'
+                      +'<td>' + value.email + '</td>'
+                      +'<td>' + value.address + '</td>'
+                      +'<td>' + value.supervisorID + '</td>'
+                      +'<td class="col-md-1">' +  
+                        '<div class="dropdown">'+
+              		    		'<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="icon fa fa-wrench"></i> Tools</button>'+
+              		    		'<ul class="dropdown-menu dropdown-menu-right" id="dropdownTools">'+
+              				      '<li><button id="viewButton" class="btn" value="' + value.employeeID + '" '+
+                              			'data-toggle="modal" data-target="#viewModal" ><i class="icon fa fa-eye"></i> View</button></li>'+
+                      			  '<li><button id="updateButton" class="btn" value="' + value.employeeID + '" '+
+                              			'data-toggle="modal" data-target="#updateModal" ><i class="icon fa fa-edit"></i> Edit</button></li>'+ 
+                              	  '<li><button id="deleteButton" class="btn" value="' + value.employeeID + '" >'+
+                              	  		'<i class="icon fa fa-trash"></i> Delete</button></li>'+ 
+              		    		'</ul>'+
+              		  		'</div>'
+                      +'</td>' +
+                    '</tr>'
+                    );  
+                });
+            } 
+          },
+          error: function(){
+              $("#alert").html('');
+              jQuery("#formModal").modal("hide");
+              showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+          }
+      });
+  }
 
 
 
@@ -91,20 +97,20 @@ $(document).ready(function(){
        
 
   /* ================================================= ADD NEW DATA ===========================================================*/
-  $(document).on("click", "#submitForm", function(event){
+  $("#employeeForm").submit(function(event){
+      event.preventDefault();
 
       var form = document.getElementById('employeeForm');
-      var dataForm = ConvertFormToJSON(form); 
+      var dataForm = ConvertFormToJSON(form);
 
-      var obj = JSON.parse(JSON.stringify(dataForm), function (key, value) {
-        if (value == "") {
-          exit;
-        } 
-      });
+      addNewData(JSON.stringify(dataForm));
+  });
+
+  function addNewData(data_json){ 
        
       $.ajax({
           type         : "POST", 
-          data         : JSON.stringify(dataForm),
+          data         : data_json,
           contentType  : "application/json",
           url          : "/inv_mgt/employee/create",
           success: function(response){
@@ -112,7 +118,7 @@ $(document).ready(function(){
               if(response.code == 200){
                 jQuery("#formModal").modal("hide");
                 showAllert(response.code, response.code + ' ' + response.message + "!", "Data has been added.");  
-                setTimeout(function(){ location.reload(); }, 1000);
+                viewAll();
               } 
               else{
                 $("#alert").html('');
@@ -126,12 +132,96 @@ $(document).ready(function(){
               showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
           }
         }).responseText;
-  });
+  }
   
+
+
+  /* ================================================= SEARCH NEW DATA ===========================================================*/
+  $("#searchForm").submit(function(event){
+      var name = $("#name").val(); 
+
+      event.preventDefault();
+
+      searchInventory(name);
+  });
+
+  $(document).on("click", "#clearSearch", function(){
+        $("#btnSearch").html(
+            '<button class="btn btn-default" type="submit" id="search">'+
+              '<i class="icon fa fa-search"></i>'+
+            '</button>'
+        );
+
+        $("#table-content").html('');
+        $("#name").val('');
+
+        viewAll();
+        event.preventDefault();
+   
+  });
+
+  function searchInventory(name){
+      $.ajax({
+        type         : "GET",
+        url          : "/inv_mgt/employee/getByName/" + name,
+        contentType  : "application/json",
+        dataType     : "json",
+        success: function(response){
+          $("#table-content").html('');
+
+          $("#btnSearch").html(
+                '<button class="btn btn-default" type="submit" id="clearSearch">'+
+                  '<i class="icon fa fa-times"></i>'+
+                '</button>'
+            );
+
+          if(response.code == 200){ 
+            $.each(response.data, function (i, value) {   
+                $("#main_table").append(
+                    '<tr>'
+                      +'<td>' + (i+1) + '</td>'
+                      +'<td>' + value.name + '</td>'
+                      +'<td>' + value.email + '</td>'
+                      +'<td>' + value.address + '</td>'
+                      +'<td>' + value.supervisorID + '</td>'
+                      +'<td class="col-md-1">' +  
+                        '<div class="dropdown">'+
+                          '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><i class="icon fa fa-wrench"></i> Tools</button>'+
+                          '<ul class="dropdown-menu dropdown-menu-right" id="dropdownTools">'+
+                            '<li><button id="viewButton" class="btn" value="' + value.employeeID + '" '+
+                                    'data-toggle="modal" data-target="#viewModal" ><i class="icon fa fa-eye"></i> View</button></li>'+
+                              '<li><button id="updateButton" class="btn" value="' + value.employeeID + '" '+
+                                    'data-toggle="modal" data-target="#updateModal" ><i class="icon fa fa-edit"></i> Edit</button></li>'+ 
+                                  '<li><button id="deleteButton" class="btn" value="' + value.employeeID + '" >'+
+                                      '<i class="icon fa fa-trash"></i> Delete</button></li>'+ 
+                          '</ul>'+
+                        '</div>'
+                      +'</td>' +
+                    '</tr>'
+                );  
+
+            });
+          }
+          else{
+            $("#main_table").append('<tr><td> No data on records.</td> </tr>');
+          } 
+        },
+        error: function(){
+            $("#alert").html('');
+            jQuery("#formModal").modal("hide");
+            showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+        }
+
+      });
+  }
+
+     
 
   
   /* ================================================= SELECT SUPERVISOR ===========================================================*/
-  $(document).on("click", "#selectButton", function(){
+  $(document).on("click", "#selectButton", function(event){
+      event.preventDefault();
+
       var employeeID = $(this).val();
       $("#selectButtonForm").val(employeeID);
 
@@ -155,25 +245,30 @@ $(document).ready(function(){
       });
   });
 
-  $(document).on("click", "#selectButtonForm", function(){
-  	  var employeeID = $(this).val(); 
+  $("#selectForm").submit(function(event){ 
+      event.preventDefault();
 
+      var employeeID = $("#selectButtonForm").val();  
       var form = document.getElementById('selectForm');
-      var dataForm = ConvertFormToJSON(form); 
- 
+      var dataForm = ConvertFormToJSON(form);
+      
+      selectSupervisor(employeeID, JSON.stringify(dataForm));
+  });
+
+  function selectSupervisor(employeeID, data_json){ 
       $.ajax({
           type         : "PUT",
           url          : "/inv_mgt/employee/selectSupervisorById/" + employeeID,
-          data         : JSON.stringify(dataForm),
+          data         : data_json,
           contentType  : "application/json",
       	  dataType     : "json",
           success: function(response){
-            $("#alert").html('');
+              $("#alert").html('');
               if(response.code == 200){
                 jQuery("#viewModal").modal("hide");
                 jQuery("#selectModal").modal("hide");
                 showAllert(response.code, response.code + ' ' + response.message + "!", "Supervisor has been selected.");  
-                setTimeout(function(){ location.reload(); }, 1000);
+                viewAll();
               } 
               else{
                 $("#alert").html('');
@@ -185,18 +280,19 @@ $(document).ready(function(){
           error: function(response){
               $("#alert").html('');
               jQuery("#viewModal").modal("hide");
-                jQuery("#selectModal").modal("hide");
+              jQuery("#selectModal").modal("hide");
               showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
           }
       });
      
-  });
+  }
 
 
 
 
   /* ================================================= UPDATE DATA  ===========================================================*/
-  $(document).on("click", "#updateButton", function(){ 
+  $(document).on("click", "#updateButton", function(event){
+      event.preventDefault(); 
       
       var employeeID = $(this).val();
       var form = document.getElementById('employeeFormUpdate');   
@@ -220,17 +316,21 @@ $(document).ready(function(){
 	
   });
 
+  $("#employeeFormUpdate").submit(function(event){
+      event.preventDefault();
 
-  $(document).on("click", "#submitFormUpdate", function(){ 
-	  var employeeID = $(this).val();  
-    
-	  var form = document.getElementById('employeeFormUpdate'); 
-	  var dataForm = ConvertFormToJSON(form);
+      var employeeID = $("#submitFormUpdate").val();
+      var form = document.getElementById('employeeFormUpdate');
+      var dataForm = ConvertFormToJSON(form);
 
+      updateData(employeeID, JSON.stringify(dataForm)); 
+  });
+ 
+  function updateData(employeeID, data_json){  
 	  $.ajax({
 	      type       	: "PUT",
 	      url     		: "/inv_mgt/employee/updateById/" + employeeID,
-	      data       	: JSON.stringify(dataForm),
+	      data       	: data_json,
 	      contentType : "application/json",
 		    dataType  	: "json",
 	      success: function(response){
@@ -238,7 +338,7 @@ $(document).ready(function(){
               if(response.code == 200){
                 jQuery("#updateModal").modal("hide");
                 showAllert(response.code, response.code + ' ' + response.message + "!", "Data has been updated.");  
-                setTimeout(function(){ location.reload(); }, 1000);
+                viewAll();
               } 
               else{
                 $("#alert").html('');
@@ -246,14 +346,14 @@ $(document).ready(function(){
                 showAllert(response.code, response.code + ' ' + response.message + "!", "");  
               } 
           },
-          error: function(response){
-              $("#alert").html('');
-              jQuery("#updateModal").modal("hide");
-              showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
-          }
+        error: function(response){
+            $("#alert").html('');
+            jQuery("#updateModal").modal("hide");
+            showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
+        }
 	  }).responseText;
      
-  });
+  }
 
 
 
@@ -270,17 +370,18 @@ $(document).ready(function(){
             if(response.code == 200){
               $("#alert").html(''); 
               showAllert(response.code, response.code + ' ' + response.message + "!", "Record deleted.");  
-              setTimeout(function(){ location.reload(); }, 1000);
+              viewAll();
             } 
             else{
               $("#alert").html(''); 
               showAllert(response.code, response.code + ' ' + response.message + "!", "");  
             } 
           },
-          error: function(){
-              $("#alert").html(''); 
+          error : function(response){
+              $("#alert").html('');
+              jQuery("#formModal").modal("hide");
               showAllert(response.responseJSON.status, response.responseJSON.status + ' ' + response.responseJSON.error + "!", response.responseJSON.message);  
-          }
+          } 
       });
   });
 

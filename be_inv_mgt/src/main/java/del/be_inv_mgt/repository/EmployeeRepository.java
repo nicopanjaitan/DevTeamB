@@ -12,5 +12,11 @@ public interface EmployeeRepository extends MongoRepository<Employee, String> {
 
     List<Employee> findEmployeeBySupervisorID(String supervisorID);
 
+    List<Employee> findAllByNameContaining(String name);
+
+    List<Employee> findAllByEmailContaining(String email);
+
+    boolean existsByNameContaining(String name);
+
     void deleteByEmployeeID(String employeeID);
 }

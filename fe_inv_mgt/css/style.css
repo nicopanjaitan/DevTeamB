@@ -94,7 +94,9 @@ table{
 	color: rgb(221, 75, 57);
 }
 
-
+.modal-header h4{
+	color: green;
+}
 
 /* INFO */
 .alert-success{
@@ -129,14 +131,16 @@ table{
 	height: 34px;
 }
 
-#divTitle{
+#divSearch{
 	padding: 0;
+	margin-bottom: 1em;
 }
 
 #divAddButton{
-	padding: 1em 0 0 0 ;
+	padding: 0;
 	text-align: right;
 	float: bottom;
+	margin-bottom: 1em;
 }
 
 
@@ -207,5 +211,11 @@ table{
 
 hr{ 
 	border-color: #ddd;
+}
+
+#requestForm #name, #requestForm #detail, 
+#requestForm #price{
+	border: none;
+	width: 100%;
 }
 

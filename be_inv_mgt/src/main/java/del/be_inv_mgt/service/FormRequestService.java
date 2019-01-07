@@ -15,11 +15,13 @@ public interface FormRequestService {
 
     List<FormRequest> getRequestByStatus(String status);
 
-    FormRequest createRequest(FormRequest formRequests, String employeeID);
+    FormRequest createRequest(FormRequest formRequest);
 
     FormRequest updateRequestById(String requestID, FormRequest formRequests);
 
     FormRequest approvedRequestById(String requestID);
+
+    FormRequest canceledRequestById(String requestID);
 
     FormRequest rejectRequestById(String requestID);
 

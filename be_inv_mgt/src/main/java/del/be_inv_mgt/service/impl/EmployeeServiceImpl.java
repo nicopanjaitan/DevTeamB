@@ -47,6 +47,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
+    public List<Employee> getAllEmployeeByName(String name){
+        if(!employeeRepository.existsByNameContaining(name)){
+            throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+        }
+
+        return employeeRepository.findAllByNameContaining(name);
+    }
+
     public Employee createEmployee(Employee employeeNew){
         Employee employee = employeeRepository.findByEmail(employeeNew.getEmail());
 

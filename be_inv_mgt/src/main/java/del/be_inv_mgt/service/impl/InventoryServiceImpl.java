@@ -36,14 +36,12 @@ public class InventoryServiceImpl implements InventoryService {
         return inventory;
     }
 
-    public Inventory getInventoryByName(String name){
-        Inventory inventory = inventoryRepository.findByName(name);
-
-        if(inventory == null){
+    public List<Inventory> getInventoryByName(String name){
+        if(!inventoryRepository.existsByNameContaining(name)){
             throw new ResourceNotFoundException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
         }
 
-        return inventory;
+        return inventoryRepository.findAllByNameContaining(name);
     }
 
     public Inventory createInventory(Inventory inventoryNew, String image){

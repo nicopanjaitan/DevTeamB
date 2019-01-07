@@ -11,6 +11,8 @@ public interface SupervisorService {
 
     Supervisor getSupervisorById(String supervisorID);
 
+    List<Supervisor> getAllSupervisorByName(String name);
+
     Supervisor createSupervisor(Supervisor supervisorID);
 
     Supervisor updateSupervisorById(String supervisorID, Supervisor supervisor);

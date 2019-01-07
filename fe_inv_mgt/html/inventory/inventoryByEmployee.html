@@ -18,12 +18,9 @@
 
 </head>
 <body>
-  <header>
-  </header>
+  <header> </header> 
 
-
-  <aside class="col-md-2" id="aside_a"> 
-  </aside>
+  <aside class="col-md-2" id="aside_a"> </aside>
   
   <!-- ================================== CONTENT ===================================== -->
   <div class="content col-md-10" >
@@ -31,8 +28,18 @@
 
       <div id="alert"></div>
 
-      <div class="col-md-12"style="padding: 0;" >
-        <h2  >Inventory By Employee</h2>
+      <div class="col-md-12"style="padding: 0; margin-bottom: 1em" >
+        <h2>Inventory By Employee</h2>
+        <form id="searchForm">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Search" name="name" id="name" required="">
+              <div class="input-group-btn" id="btnSearch">
+                <button class="btn btn-default" type="submit" id="search">
+                  <i class="icon fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </form> 
       </div> 
           
       <table class="table table-striped table-hover" id="main_table">
@@ -65,30 +72,37 @@
             <div class="modal-body">
 
                <form action="" method="post" id="requestForm" enctype="multipart/form-data" >
+                <div class="form-group"> 
+                  <input type="hidden" class="form-control" id="inventoryID" required="" name="inventoryID">
+                </div>
+                <div class="form-group"> 
+                  <input type="hidden" class="form-control" id="employeeID" required="" name="employeeID">
+                </div>
+                <div class="form-group"> 
+                  <input type="hidden" class="form-control" id="supervisorID" required="" name="supervisorID">
+                </div>
+
                 <div class="form-group">
-                  <label for="name">Inventory Name</label>
-                  <input type="text" class="form-control" required="" name="name" readonly="">
+                  <label for="name">Inventory Name: </label>
+                  <input type="text" required="" name="name" id="name" readonly="">
                 </div>
                 <div class="form-group">
-                  <label for="detail">Detail</label>
-                  <textarea class="form-control" rows="2" required="" name="detail" readonly=""></textarea>
+                  <label for="detail">Detail: </label> 
+                  <textarea rows="1" required="" name="detail" id="detail" readonly=""></textarea>
                 </div>
                 <div class="form-group">
-                  <label for="price">Price</label>
-                  <input type="number" class="form-control" id="price" required="" min="1" name="price" readonly="">
+                  <label for="price">Price: </label>
+                  <input type="text" id="price" required="" min="1" name="price" readonly="">
                 </div>
                 <div class="form-group">
                   <label for="stock">Stock Request</label>
-                  <input type="number" class="form-control" id="stock" required="" min="1" name="qtyRequest">
+                  <input type="number" class="form-control"  id="qtyRequest" required="" min="1" name="qtyRequest">
                 </div>
                 <div class="form-group">
                   <label for="destination">Destination</label>
-                  <textarea class="form-control" rows="2" required="" name="destination" readonly=""></textarea>
+                  <textarea class="form-control" rows="2" required="" name="destination" id="destination" ></textarea>
                 </div>
-                <div class="form-group">
-                  <label for="supervisorID">Stock Request</label>
-                  <input type="text" class="form-control" id="supervisorID" required="" name="supervisorID">
-                </div>
+                
                 <button type="submit" class="btn btn-success" id="addButtonForm" style="width: 100%">Add New</button>
               </form> 
  
